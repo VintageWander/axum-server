@@ -7,9 +7,7 @@ use dotenv::{dotenv, var};
 use error::Error;
 use services::user::UserService;
 
-use crate::{
-    dao::Dao, db::mongo::Mongo, model::user::User, repo::user::UserRepo, routes::user::user_routes,
-};
+use crate::{db::mongo::Mongo, routes::user::user_routes};
 
 mod dao;
 mod db;
@@ -37,9 +35,7 @@ async fn main() -> Result<()> {
     dotenv().ok();
 
     let db = Mongo::init().await?;
-    let user_dao = Dao::<User>::init(&db, "User");
-    let user_repo = UserRepo::init(&user_dao);
-    let user_service = UserService::init(&user_repo);
+    let user_service = UserService::init(&db);
 
     let port = var("PORT")
         .expect("Cannot read the PORT in the env")

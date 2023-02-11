@@ -4,7 +4,7 @@ pub mod exists;
 pub mod get;
 pub mod update;
 
-use crate::{dao::Dao, model::user::User};
+use crate::{dao::Dao, db::mongo::Mongo, model::user::User};
 
 #[derive(Debug, Clone)]
 pub struct UserRepo {
@@ -12,9 +12,9 @@ pub struct UserRepo {
 }
 
 impl UserRepo {
-    pub fn init(user_dao: &Dao<User>) -> Self {
+    pub fn init(db: &Mongo) -> Self {
         Self {
-            user_dao: user_dao.clone(),
+            user_dao: Dao::<User>::init(db, "User"),
         }
     }
 }
