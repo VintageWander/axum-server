@@ -1,5 +1,5 @@
 pub mod create;
 pub mod delete;
-pub mod get;
-pub mod profile;
+pub mod loggedin;
+pub mod login;
 pub mod update;
