@@ -9,10 +9,15 @@ edition = "2021"
 # Server
 tokio = { version = "1.25.0", features = ["full"] }
 axum = { version = "0.6.4", features = ["json", "query", "headers"] }
+axum-extra = { version = "0.5.0", features = ["cookie"] }
 futures-util = "0.3.26"
 mongodb = "2.3.1"
 mime_guess = "2.0.4"
 dotenv = "0.15.0"
+
+# Auth
+jsonwebtoken = "8.2.0"
+cookie = "0.17.0"
 
 # Validation
 validator = { version = "0.16.0", features = ["derive"] }
