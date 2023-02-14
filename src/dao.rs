@@ -1,3 +1,5 @@
+use std::vec::IntoIter;
+
 use futures_util::TryStreamExt;
 use mongodb::{
     bson::{doc, Document},
@@ -23,8 +25,14 @@ where
         }
     }
 
-    pub async fn get_multiple(&self, doc: Document) -> Result<Vec<T>> {
-        let resources = self.collection.find(doc, None).await?.try_collect().await?;
+    pub async fn get_multiple(&self, doc: Document) -> Result<IntoIter<T>> {
+        let resources = self
+            .collection
+            .find(doc, None)
+            .await?
+            .try_collect::<Vec<_>>()
+            .await?
+            .into_iter();
         Ok(resources)
     }
 
