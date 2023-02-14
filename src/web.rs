@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
@@ -16,83 +14,98 @@ pub struct Web {
     error: String,
 }
 
-impl IntoResponse for Web {
-    fn into_response(self) -> Response {
-        (StatusCode::from_str(&self.code).unwrap(), Json(self)).into_response()
-    }
-}
-
 impl Web {
     pub fn ok(message: impl ToString, data: impl Serialize + DeserializeOwned) -> Response {
-        Web {
-            code: StatusCode::OK.to_string(),
-            message: message.to_string(),
-            data: json!(&data),
-            error: "".into(),
-        }
-        .into_response()
+        (
+            StatusCode::OK,
+            Json(Web {
+                code: StatusCode::OK.to_string(),
+                message: message.to_string(),
+                data: json!(&data),
+                error: "".into(),
+            }),
+        )
+            .into_response()
     }
 
     pub fn created<T: Serialize + DeserializeOwned>(
         message: impl ToString,
         data: impl Serialize + DeserializeOwned,
     ) -> Response {
-        Web {
-            code: StatusCode::CREATED.to_string(),
-            message: message.to_string(),
-            data: json!(&data),
-            error: "".into(),
-        }
-        .into_response()
+        (
+            StatusCode::CREATED,
+            Json(Web {
+                code: StatusCode::CREATED.to_string(),
+                message: message.to_string(),
+                data: json!(&data),
+                error: "".into(),
+            }),
+        )
+            .into_response()
     }
 
     pub fn forbidden(message: impl ToString, error: impl ToString) -> Response {
-        Web {
-            code: StatusCode::FORBIDDEN.to_string(),
-            message: message.to_string(),
-            data: json!(()),
-            error: error.to_string(),
-        }
-        .into_response()
+        (
+            StatusCode::FORBIDDEN,
+            Json(Web {
+                code: StatusCode::FORBIDDEN.to_string(),
+                message: message.to_string(),
+                data: json!(()),
+                error: error.to_string(),
+            }),
+        )
+            .into_response()
     }
 
     pub fn conflict(message: impl ToString, error: impl ToString) -> Response {
-        Web {
-            code: StatusCode::CONFLICT.to_string(),
-            message: message.to_string(),
-            data: json!(()),
-            error: error.to_string(),
-        }
-        .into_response()
+        (
+            StatusCode::CONFLICT,
+            Json(Web {
+                code: StatusCode::CONFLICT.to_string(),
+                message: message.to_string(),
+                data: json!(()),
+                error: error.to_string(),
+            }),
+        )
+            .into_response()
     }
 
     pub fn bad_request(message: impl ToString, error: impl ToString) -> Response {
-        Web {
-            code: StatusCode::BAD_REQUEST.to_string(),
-            message: message.to_string(),
-            data: json!(()),
-            error: error.to_string(),
-        }
-        .into_response()
+        (
+            StatusCode::BAD_REQUEST,
+            Json(Web {
+                code: StatusCode::BAD_REQUEST.to_string(),
+                message: message.to_string(),
+                data: json!(()),
+                error: error.to_string(),
+            }),
+        )
+            .into_response()
     }
 
     pub fn not_found(message: impl ToString, error: impl ToString) -> Response {
-        Web {
-            code: StatusCode::NOT_FOUND.to_string(),
-            message: message.to_string(),
-            data: json!(()),
-            error: error.to_string(),
-        }
-        .into_response()
+        (
+            StatusCode::NOT_FOUND,
+            Json(Web {
+                code: StatusCode::NOT_FOUND.to_string(),
+                message: message.to_string(),
+                data: json!(()),
+                error: error.to_string(),
+            }),
+        )
+            .into_response()
     }
 
     pub fn internal_error(message: impl ToString, error: impl ToString) -> Response {
-        Web {
-            code: StatusCode::INTERNAL_SERVER_ERROR.to_string(),
-            message: message.to_string(),
-            data: json!(()),
-            error: error.to_string(),
-        }
-        .into_response()
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(Web {
+                code: StatusCode::INTERNAL_SERVER_ERROR.to_string(),
+                message: message.to_string(),
+                data: json!(()),
+                error: error.to_string(),
+            }),
+        )
+            .into_response()
     }
 }
