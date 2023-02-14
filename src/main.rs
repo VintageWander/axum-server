@@ -12,14 +12,17 @@ use crate::{db::mongo::Mongo, routes::user::user_routes};
 mod dao;
 mod db;
 mod error;
+mod extractors;
 mod handler;
 mod helper;
 mod model;
 mod repo;
+mod request;
+mod response;
 mod routes;
 mod services;
 mod validation;
-pub mod web;
+mod web;
 
 type Result<T> = std::result::Result<T, Error>;
 type WebResult = Result<Response>;
