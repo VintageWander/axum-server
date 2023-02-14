@@ -1,10 +1,16 @@
-use mongodb::bson::{doc, oid::ObjectId};
+use std::vec::IntoIter;
+
+use mongodb::bson::{doc, oid::ObjectId, Document};
 
 use super::UserRepo;
 use crate::{model::user::User, Result};
 
 impl UserRepo {
-    pub async fn get_users(&self) -> Result<Vec<User>> {
+    pub async fn get_users_by(&self, doc: Document) -> Result<IntoIter<User>> {
+        self.user_dao.get_multiple(doc).await
+    }
+
+    pub async fn get_users(&self) -> Result<IntoIter<User>> {
         self.user_dao.get_multiple(doc! {}).await
     }
 
