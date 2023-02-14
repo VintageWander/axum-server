@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use crate::{
+    response::user::UserResponse,
     validation::user::{check_password, check_username},
     Result,
 };
@@ -45,6 +46,10 @@ impl From<User> for Document {
 impl User {
     pub fn builder() -> UserBuilder {
         UserBuilder::new()
+    }
+
+    pub fn into_response(self) -> UserResponse {
+        self.into()
     }
 }
 
@@ -101,5 +106,19 @@ impl UserBuilder {
         user.validate()?;
 
         Ok(user)
+    }
+}
+
+impl From<User> for UserBuilder {
+    fn from(u: User) -> Self {
+        Self {
+            id: Some(u.id),
+            username: Some(u.username),
+            password: Some(u.password),
+            email: Some(u.email),
+            refresh_token: Some(u.refresh_token),
+            created_at: Some(u.created_at),
+            updated_at: Some(u.updated_at),
+        }
     }
 }
