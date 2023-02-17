@@ -50,6 +50,9 @@ pub enum Error {
 
     #[error("Unauthorized")]
     Unauthorized,
+
+    #[error("Split error")]
+    Split,
 }
 
 impl IntoResponse for Error {
@@ -82,7 +85,7 @@ impl IntoResponse for Error {
             Error::PasswordsMismatch => Web::bad_request("Passwords mismatch", "Password and confirm password fields are incorrect"),
             Error::InvalidPassword => Web::bad_request("Invalid password", "The password provided does not match with the user's password in the database"),
             Error::Unauthorized => Web::forbidden("Unauthorized", "You are not logged in"),
-
+            Error::Split => Web::internal_error("Split error", "Cannot split the full filename to filename and extension"),
         }
     }
 }
