@@ -36,9 +36,9 @@ pub fn profile_user_route() -> Router<SharedState> {
 }
 
 pub fn update_user_route() -> Router<SharedState> {
-    Router::new().route("/update/:user_id", put(update_user_handler))
+    Router::new().route("/:user_id", put(update_user_handler))
 }
 
 pub fn delete_user_route() -> Router<SharedState> {
-    Router::new().route("/delete/:user_id", delete(delete_user_handler))
+    Router::new().route("/:user_id", delete(delete_user_handler))
 }
