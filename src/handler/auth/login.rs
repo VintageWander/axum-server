@@ -12,7 +12,7 @@ use crate::{
     SharedState, WebResult,
 };
 
-pub async fn login_user_handler(
+pub async fn login_handler(
     State(SharedState { user_service }): State<SharedState>,
     cookies: CookieJar,
     user_req: LoginUserRequest,

@@ -11,7 +11,7 @@ use crate::{
     SharedState, WebResult,
 };
 
-pub async fn logout_user_handler(
+pub async fn logout_handler(
     State(SharedState { user_service }): State<SharedState>,
     cookies: CookieJar,
     LoggedInUser(cookie_user): LoggedInUser,
