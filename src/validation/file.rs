@@ -3,6 +3,7 @@ use validator::ValidationError;
 use super::check_with;
 
 pub fn check_filename(filename: &str) -> Result<(), ValidationError> {
+    // hello
     // This regex matches hello,
     // Rejects hello.txt and .txt
     // This can also match hello_world or hello-world
@@ -14,6 +15,7 @@ pub fn check_filename(filename: &str) -> Result<(), ValidationError> {
 }
 
 pub fn check_extension(extension: &str) -> Result<(), ValidationError> {
+    // .txt
     check_with(
         extension,
         r#"^(txt|png|jpg|jpeg|mp3)$"#,
@@ -22,6 +24,7 @@ pub fn check_extension(extension: &str) -> Result<(), ValidationError> {
 }
 
 pub fn check_visibility(visibility: &str) -> Result<(), ValidationError> {
+    // public || private
     check_with(
         visibility,
         r#"^(public|private)$"#,
@@ -30,11 +33,14 @@ pub fn check_visibility(visibility: &str) -> Result<(), ValidationError> {
 }
 
 pub fn check_full_filename(full_filename: &str) -> Result<(), ValidationError> {
-    // This regex will match cases like hello.txt, hello or .txt or just txt will fail
+    // hello.txt
+    // This regex will match cases like hello.txt,
+    // hello or .txt or just txt will fail
     check_with(full_filename, r#"^[a-zA-Z0-9-_]{3,}\.(txt|mp3|png|jpg|jpeg)$"#, "The full filename must met filename requirements and can only have txt, mp3, png, jpeg or jpg extension")
 }
 
 pub fn check_dir(position: &str) -> Result<(), ValidationError> {
+    // user/folder/
     // This regex will match for cases like user/, user/hello/, hello-world/user/, hello_world/something/
     // It will reject cases like user, /user, /user/, or user/hello
     // Basically it requires a slash must exists at the end
@@ -46,6 +52,7 @@ pub fn check_dir(position: &str) -> Result<(), ValidationError> {
 }
 
 pub fn check_fullpath(fullpath: &str) -> Result<(), ValidationError> {
+    // user/folder/hello.txt
     // This regex will match cases like user/hello.txt, hello.txt, or nested/something-deep/hello.txt
     // This will reject cases like hello/.txt, hello/world, or even hello/
     check_with(
