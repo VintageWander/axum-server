@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use crate::{
+    error::Error,
     response::user::UserResponse,
     validation::user::{check_password, check_username},
     Result,
@@ -124,5 +125,12 @@ impl From<User> for UserBuilder {
             created_at: Some(u.created_at),
             updated_at: Some(u.updated_at),
         }
+    }
+}
+
+impl TryFrom<UserBuilder> for User {
+    type Error = Error;
+    fn try_from(builder: UserBuilder) -> std::result::Result<Self, Self::Error> {
+        builder.build()
     }
 }
