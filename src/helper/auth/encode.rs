@@ -15,7 +15,7 @@ pub fn encode_jwt(user: &User, token_type: JwtType) -> Result<String> {
     let expiration = Utc::now().checked_add_signed(duration).unwrap().timestamp() as usize;
 
     let claims = Claims {
-        sub: user.id,
+        sub: user.id.to_string(),
         name: user.username.clone(),
         exp: expiration,
     };

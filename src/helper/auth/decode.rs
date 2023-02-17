@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use dotenv::var;
 use jsonwebtoken::{decode, Algorithm, DecodingKey, Validation};
 use mongodb::bson::oid::ObjectId;
@@ -18,7 +20,7 @@ pub fn decode_jwt(jwt: String, token_type: JwtType) -> Result<ObjectId> {
 
     let decoded = decode::<Claims>(&jwt, &key, &validation)?;
 
-    Ok(decoded.claims.sub)
+    Ok(ObjectId::from_str(&decoded.claims.sub)?)
 }
 
 pub fn decode_access_token(jwt: String) -> Result<ObjectId> {

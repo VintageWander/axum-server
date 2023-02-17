@@ -1,4 +1,3 @@
-use mongodb::bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
 
 pub mod cookie;
@@ -10,9 +9,9 @@ pub enum JwtType {
     Refresh,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
-    sub: ObjectId,
+    sub: String,
     name: String,
     exp: usize,
 }
