@@ -68,6 +68,10 @@ impl UserBuilder {
     pub fn new() -> Self {
         Self::default()
     }
+    pub fn id(mut self, id: ObjectId) -> Self {
+        self.id = Some(id);
+        self
+    }
     pub fn username(mut self, username: String) -> Self {
         self.username = Some(username);
         self
