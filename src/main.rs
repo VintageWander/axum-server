@@ -7,7 +7,10 @@ use dotenv::{dotenv, var};
 use error::Error;
 use services::user::UserService;
 
-use crate::{db::mongo::Mongo, routes::user::user_routes};
+use crate::{
+    db::mongo::Mongo,
+    routes::{auth::auth_routes, user::user_routes},
+};
 
 mod dao;
 mod db;
@@ -48,6 +51,7 @@ async fn main() -> Result<()> {
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
 
     let router = Router::new()
+        .merge(auth_routes())
         .merge(user_routes())
         .with_state(SharedState { user_service });
 
