@@ -10,6 +10,7 @@ use services::user::UserService;
 use crate::{
     db::mongo::Mongo,
     routes::{auth::auth_routes, user::user_routes},
+    services::folder::FolderService,
 };
 
 mod dao;
@@ -33,6 +34,7 @@ type WebResult = Result<Response>;
 #[derive(Debug, Clone)]
 pub struct SharedState {
     user_service: UserService,
+    folder_service: FolderService,
 }
 
 #[tokio::main]
@@ -42,6 +44,7 @@ async fn main() -> Result<()> {
 
     let db = Mongo::init().await?;
     let user_service = UserService::init(&db);
+    let folder_service = FolderService::init(&db);
 
     let port = var("PORT")
         .expect("Cannot read the PORT in the env")
@@ -53,7 +56,10 @@ async fn main() -> Result<()> {
     let router = Router::new()
         .merge(auth_routes())
         .merge(user_routes())
-        .with_state(SharedState { user_service });
+        .with_state(SharedState {
+            user_service,
+            folder_service,
+        });
 
     Server::bind(&addr)
         .serve(router.into_make_service())
