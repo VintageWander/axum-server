@@ -36,9 +36,12 @@ pub enum Error {
     InvalidId(#[from] mongodb::bson::oid::Error),
 
     // Custom error
+
+    // General resource
     #[error("Resource not found")]
     ResourceNotFound,
 
+    // User
     #[error("Conflict user")]
     ConflictUser,
 
@@ -53,6 +56,18 @@ pub enum Error {
 
     #[error("Split error")]
     Split,
+
+    // Folder
+    
+    #[error("Conflict folder")]
+    ConflictFolder,
+
+    #[error("Parent folder not found")]
+    ParentFolderNotFound,
+
+    #[error("Cannot move to self")]
+    MoveToSelf,
+
 }
 
 impl IntoResponse for Error {
@@ -77,15 +92,24 @@ impl IntoResponse for Error {
             Error::InvalidPath(e) => Web::bad_request("Invalid path string provided", e),
 
             // Custom error
+            
+            // General resource
             Error::ResourceNotFound => Web::not_found(
                 "Resource not found",
                 "Users, files, folders, or any resource with the provided information could not be found",
             ),
-            Error::ConflictUser => Web::conflict("Resource conflict", "This could mean that the resource provided already exists in the database"),
+
+            // User 
+            Error::ConflictUser => Web::conflict("User conflict", "This could mean that the username and email provided are already exists in the database"),
             Error::PasswordsMismatch => Web::bad_request("Passwords mismatch", "Password and confirm password fields are incorrect"),
             Error::InvalidPassword => Web::bad_request("Invalid password", "The password provided does not match with the user's password in the database"),
             Error::Unauthorized => Web::forbidden("Unauthorized", "You are not logged in"),
             Error::Split => Web::internal_error("Split error", "Cannot split the full filename to filename and extension"),
+            
+            // Folder
+            Error::ConflictFolder => Web::conflict("Folder conflict", "This means that the folder with the same name in the exact position already exists, please try another name"),
+            Error::ParentFolderNotFound => Web::not_found("Parent folder not found", "The folder that lives in the position provided in the new folder request could not be found"),
+            Error::MoveToSelf => Web::not_found("Cannot move to self", "You cannot move a folder into itself, or moving parent folder into child"),
         }
     }
 }
