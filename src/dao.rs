@@ -83,9 +83,13 @@ where
         Ok(())
     }
 
-    pub async fn delete_one(&self, doc: Document) -> Result<()> {
-        self.collection.delete_one(doc, None).await?;
-        Ok(())
+    pub async fn delete_one(&self, doc: Document) -> Result<T> {
+        let deleted_resource = self
+            .collection
+            .find_one_and_delete(doc, None)
+            .await?
+            .ok_or(Error::ResourceNotFound)?;
+        Ok(deleted_resource)
     }
 
     pub async fn delete_multiple(&self, doc: Document) -> Result<()> {
