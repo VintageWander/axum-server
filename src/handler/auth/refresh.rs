@@ -11,7 +11,7 @@ use crate::{
 };
 
 pub async fn refresh_handler(
-    State(SharedState { user_service }): State<SharedState>,
+    State(SharedState { user_service, .. }): State<SharedState>,
     cookies: CookieJar,
 ) -> WebResult {
     let refresh_token = cookies

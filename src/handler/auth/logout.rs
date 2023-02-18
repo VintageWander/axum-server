@@ -12,7 +12,7 @@ use crate::{
 };
 
 pub async fn logout_handler(
-    State(SharedState { user_service }): State<SharedState>,
+    State(SharedState { user_service, .. }): State<SharedState>,
     cookies: CookieJar,
     LoggedInUser(cookie_user): LoggedInUser,
 ) -> WebResult {

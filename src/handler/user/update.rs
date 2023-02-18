@@ -9,7 +9,7 @@ use crate::{
 };
 
 pub async fn update_user_handler(
-    State(SharedState { user_service }): State<SharedState>,
+    State(SharedState { user_service, .. }): State<SharedState>,
     ParamID(user_id): ParamID,
     LoggedInUser(cookie_user): LoggedInUser,
     user_req: UpdateUserRequest,
