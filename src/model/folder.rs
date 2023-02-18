@@ -1,10 +1,13 @@
-use mongodb::bson::oid::ObjectId;
+use chrono::Utc;
+use mongodb::bson::{doc, oid::ObjectId, Document};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use crate::{error::Error, helper::make_error::validation_message, validation::file::*, Result};
 
-#[derive(Debug, Serialize, Deserialize, Validate)]
+use super::user::User;
+
+#[derive(Debug, Clone, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct Folder {
     #[serde(rename = "_id")]
@@ -26,12 +29,28 @@ pub struct Folder {
     pub updated_at: i64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum FolderVisibility {
     Public,
     Shared,
     Private,
+}
+
+impl From<Folder> for Document {
+    fn from(f: Folder) -> Self {
+        let visibility = f.visibility_to_str();
+
+        doc! {
+            "visibilty": visibility,
+            "owner": f.owner,
+            "folderName": f.folder_name,
+            "position": f.position,
+            "fullpath": f.fullpath,
+            "createAt": f.created_at,
+            "updatedAt": f.updated_at,
+        }
+    }
 }
 
 impl Folder {
@@ -49,5 +68,58 @@ impl Folder {
             "private" => FolderVisibility::Private,
             _ => return Err(Error::Field(validation_message("Invalid visibility type"))),
         })
+    }
+
+    pub fn new(
+        id: &ObjectId,
+        owner: &User,
+        folder_name: &str,
+        position: &str,
+        visibility: FolderVisibility,
+        created_at: i64,
+    ) -> Result<Self> {
+        check_folder_name(folder_name)?;
+        check_dir(position)?;
+
+        // folder_name = something
+        // position = folder/
+
+        let position_with_owner = format!("{}/{}", owner.username, position);
+        // position_with_owner = User/folder/
+
+        let fullpath = format!("{}{}/", position_with_owner, folder_name);
+        // fullpath = User/folder/something/
+
+        let folder = Folder {
+            id: *id,
+            owner: owner.id,
+            folder_name: folder_name.into(),
+            position: position_with_owner,
+            visibility,
+            fullpath,
+            created_at,
+            updated_at: Utc::now().timestamp_millis(),
+        };
+
+        folder.validate()?;
+
+        todo!()
+    }
+
+    pub fn new_root(owner: &User) -> Result<Self> {
+        let root_folder = Folder {
+            id: ObjectId::new(),
+            owner: owner.id,
+            folder_name: owner.username.clone(),
+            position: format!("{}/", owner.username),
+            visibility: FolderVisibility::Private,
+            fullpath: format!("{}/", owner.username),
+            created_at: Utc::now().timestamp_millis(),
+            updated_at: Utc::now().timestamp_millis(),
+        };
+
+        root_folder.validate()?;
+
+        Ok(root_folder)
     }
 }
