@@ -23,7 +23,10 @@ impl FolderRepo {
     }
 
     pub async fn delete_folder(&self, folder: Folder) -> Result<()> {
-        let deleted_folder = self.folder_dao.delete_one(doc! {"_id": folder.id}).await?;
+        let deleted_folder = self
+            .folder_dao
+            .delete_one(doc! {"_id": folder.id})
+            .await?;
 
         self.delete_folders_by_prefix_fullpath(&deleted_folder.fullpath)
             .await?;

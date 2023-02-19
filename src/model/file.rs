@@ -124,7 +124,9 @@ impl File {
         // position = folder/
         // owner.username = User
 
-        let (filename, extension) = full_filename.rsplit_once('.').ok_or(Error::Split)?;
+        let (filename, extension) = full_filename
+            .rsplit_once('.')
+            .ok_or(Error::Split)?;
         // filename = hello
         // extension = txt
 

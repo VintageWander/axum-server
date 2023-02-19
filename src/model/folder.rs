@@ -3,7 +3,10 @@ use mongodb::bson::{doc, oid::ObjectId, Document};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{error::Error, helper::make_error::validation_message, validation::file::*, Result};
+use crate::{
+    error::Error, helper::make_error::validation_message, response::folder::FolderResponse,
+    validation::file::*, Result,
+};
 
 use super::user::User;
 
@@ -29,12 +32,24 @@ pub struct Folder {
     pub updated_at: i64,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum FolderVisibility {
     Public,
     Shared,
     Private,
+}
+
+impl TryFrom<String> for FolderVisibility {
+    type Error = Error;
+    fn try_from(visibility: String) -> std::result::Result<Self, Self::Error> {
+        Ok(match visibility.as_str() {
+            "public" => FolderVisibility::Public,
+            "shared" => FolderVisibility::Shared,
+            "private" => FolderVisibility::Private,
+            _ => return Err(Error::Field(validation_message("Invalid visibility type"))),
+        })
+    }
 }
 
 impl From<Folder> for Document {
@@ -60,14 +75,6 @@ impl Folder {
             FolderVisibility::Shared => "shared",
             FolderVisibility::Private => "private",
         }
-    }
-    pub fn str_to_visibility(visibility: &str) -> Result<FolderVisibility> {
-        Ok(match visibility {
-            "public" => FolderVisibility::Public,
-            "shared" => FolderVisibility::Shared,
-            "private" => FolderVisibility::Private,
-            _ => return Err(Error::Field(validation_message("Invalid visibility type"))),
-        })
     }
 
     pub fn new(
@@ -121,5 +128,9 @@ impl Folder {
         root_folder.validate()?;
 
         Ok(root_folder)
+    }
+
+    pub fn into_response(self) -> FolderResponse {
+        self.into()
     }
 }

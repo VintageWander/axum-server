@@ -104,8 +104,12 @@ impl UserBuilder {
             email: self.email.unwrap_or_default(),
             password: self.password.unwrap_or_default(),
             refresh_token: self.refresh_token.unwrap_or_default(),
-            created_at: self.created_at.unwrap_or(Utc::now().timestamp_millis()),
-            updated_at: self.updated_at.unwrap_or(Utc::now().timestamp_millis()),
+            created_at: self
+                .created_at
+                .unwrap_or(Utc::now().timestamp_millis()),
+            updated_at: self
+                .updated_at
+                .unwrap_or(Utc::now().timestamp_millis()),
         };
 
         user.validate()?;
