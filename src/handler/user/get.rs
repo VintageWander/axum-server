@@ -1,6 +1,6 @@
 use axum::extract::State;
 
-use crate::{extractors::query_doc::UserQueryDocument, web::Web, SharedState, WebResult};
+use crate::{extractors::user_query::UserQueryDocument, web::Web, SharedState, WebResult};
 
 pub async fn get_users_handler(
     State(SharedState { user_service, .. }): State<SharedState>,
