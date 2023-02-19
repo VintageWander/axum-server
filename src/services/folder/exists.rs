@@ -6,7 +6,9 @@ use crate::Result;
 
 impl FolderService {
     pub async fn exists_folder_by_id(&self, folder_id: &ObjectId) -> Result<bool> {
-        self.folder_repo.exists_folder_by_id(folder_id).await
+        self.folder_repo
+            .exists_folder_by_id(folder_id)
+            .await
     }
 
     // Useful to check if a folder exists when creating a new folder
@@ -14,7 +16,9 @@ impl FolderService {
     // (This function basically check conflicts before creating a new folder)
     pub async fn exists_folder_by_fullpath(&self, fullpath: &str) -> Result<bool> {
         check_dir(fullpath)?;
-        self.folder_repo.exists_folder_by_fullpath(fullpath).await
+        self.folder_repo
+            .exists_folder_by_fullpath(fullpath)
+            .await
     }
 
     // Checks if a folder exists at a given position,
@@ -22,6 +26,8 @@ impl FolderService {
     // (It basically means check if parent exists)
     pub async fn exists_folder_by_position(&self, position: &str) -> Result<bool> {
         check_dir(position)?;
-        self.folder_repo.exists_folder_by_position(position).await
+        self.folder_repo
+            .exists_folder_by_position(position)
+            .await
     }
 }
