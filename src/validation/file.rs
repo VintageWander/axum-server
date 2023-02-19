@@ -27,8 +27,8 @@ pub fn check_visibility(visibility: &str) -> Result<(), ValidationError> {
     // public || private
     check_with(
         visibility,
-        r#"^(public|private)$"#,
-        "Visibility can only be public or private",
+        r#"^(public|private|shared)$"#,
+        "Visibility can only be public, shared or private",
     )
 }
 
@@ -46,7 +46,7 @@ pub fn check_dir(position: &str) -> Result<(), ValidationError> {
     // Basically it requires a slash must exists at the end
     check_with(
         position,
-        r#"^([a-zA-Z0-9-_]{3,}[/])*$"#,
+        r#"^(([a-zA-Z0-9-_]{3,})*[/])+$"#,
         "The dir input is in wrong format",
     )
 }
@@ -57,7 +57,7 @@ pub fn check_fullpath(fullpath: &str) -> Result<(), ValidationError> {
     // This will reject cases like hello/.txt, hello/world, or even hello/
     check_with(
         fullpath,
-        r#"^(([a-zA-Z0-9-_]{3,}[/])*)[a-zA-Z0-9-_]{3,}\.(png|txt|jpg|jpeg|mp3)$"#,
+        r#"^(([a-zA-Z0-9-_]{3,}[/])+)[a-zA-Z0-9-_]{3,}\.(png|txt|jpg|jpeg|mp3)$"#,
         "The fullpath is incorrect",
     )
 }
