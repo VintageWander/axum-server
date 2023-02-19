@@ -30,7 +30,9 @@ pub async fn logout_handler(
 
     Ok((
         StatusCode::OK,
-        cookies.remove(access_cookie).remove(refresh_cookie),
+        cookies
+            .remove(access_cookie)
+            .remove(refresh_cookie),
         Web::ok("Logout success", ()),
     )
         .into_response())
