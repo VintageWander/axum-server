@@ -19,23 +19,47 @@ impl FolderService {
         self.folder_repo.get_folder_by_id(folder_id).await
     }
 
+    pub async fn get_folder_by_id_owner(
+        &self,
+        folder_id: &ObjectId,
+        owner: &User,
+    ) -> Result<Folder> {
+        self.folder_repo
+            .get_folder_by_id_owner(folder_id, owner)
+            .await
+    }
+
+    pub async fn get_folders(&self) -> Result<IntoIter<Folder>> {
+        self.folder_repo.get_folders().await
+    }
+
+    pub async fn get_public_folders(&self) -> Result<IntoIter<Folder>> {
+        self.folder_repo.get_public_folders().await
+    }
+
     pub async fn get_folders_by_owner(&self, owner: &User) -> Result<IntoIter<Folder>> {
         self.folder_repo.get_folders_by_owner(owner).await
     }
 
     pub async fn get_public_folders_by_owner(&self, owner: &User) -> Result<IntoIter<Folder>> {
-        self.folder_repo.get_public_folders_by_owner(owner).await
+        self.folder_repo
+            .get_public_folders_by_owner(owner)
+            .await
     }
 
     pub async fn get_shared_folders_by_owner(&self, owner: &User) -> Result<IntoIter<Folder>> {
-        self.folder_repo.get_shared_folders_by_owner(owner).await
+        self.folder_repo
+            .get_shared_folders_by_owner(owner)
+            .await
     }
 
     // This function is useful for getting all folders at a given location
     // to create a folder tree
     pub async fn get_folders_by_position(&self, position: &str) -> Result<IntoIter<Folder>> {
         check_dir(position)?;
-        self.folder_repo.get_folders_by_position(position).await
+        self.folder_repo
+            .get_folders_by_position(position)
+            .await
     }
 
     pub async fn get_public_folders_by_position(&self, position: &str) -> Result<IntoIter<Folder>> {
@@ -48,6 +72,8 @@ impl FolderService {
     // This is useful for peeking the inner contents of a specific folder
     pub async fn get_folders_by_fullpath(&self, fullpath: &str) -> Result<IntoIter<Folder>> {
         check_dir(fullpath)?;
-        self.folder_repo.get_folders_by_fullpath(fullpath).await
+        self.folder_repo
+            .get_folders_by_fullpath(fullpath)
+            .await
     }
 }
