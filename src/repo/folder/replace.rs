@@ -5,11 +5,16 @@ use crate::Result;
 use super::FolderRepo;
 
 impl FolderRepo {
+    // This function only exists in the repository layer,
+    // It means that only the service layer can use this function
+    // I do not want to expose this function on the service layer because it's only purpose
+    // is to update the folders position, and it is only used on the service layer,
+    // specifically in the update method
     pub async fn change_inner_folders_position(
         &self,
         search: &str, // Query all folders that has this search string in its fullpath
-        from: &str,   // changing from this string
-        to: &str,     // into this string
+        from: &str,   // find this string inside of their fullpath
+        to: &str,     // and change them all into this string
     ) -> Result<()> {
         let regex = Regex {
             pattern: format!("^{search}"),
