@@ -12,7 +12,10 @@ pub fn encode_jwt(user: &User, token_type: JwtType) -> Result<String> {
         JwtType::Refresh => (var("JWT_REFRESH").unwrap(), Duration::hours(3)),
     };
 
-    let expiration = Utc::now().checked_add_signed(duration).unwrap().timestamp() as usize;
+    let expiration = Utc::now()
+        .checked_add_signed(duration)
+        .unwrap()
+        .timestamp() as usize;
 
     let claims = Claims {
         sub: user.id.to_string(),
