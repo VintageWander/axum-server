@@ -58,7 +58,6 @@ pub enum Error {
     Split,
 
     // Folder
-    
     #[error("Conflict folder")]
     ConflictFolder,
 
@@ -67,7 +66,6 @@ pub enum Error {
 
     #[error("Cannot move to self")]
     MoveToSelf,
-
 }
 
 impl IntoResponse for Error {
