@@ -17,7 +17,23 @@ impl FolderRepo {
     }
 
     pub async fn get_folder_by_id(&self, folder_id: &ObjectId) -> Result<Folder> {
-        self.folder_dao.get_one(doc! {"_id": folder_id}).await
+        self.folder_dao
+            .get_one(doc! {"_id": folder_id})
+            .await
+    }
+
+    pub async fn get_folder_by_id_owner(
+        &self,
+        folder_id: &ObjectId,
+        owner: &User,
+    ) -> Result<Folder> {
+        self.folder_dao
+            .get_one(doc! {"_id": folder_id, "owner": owner.id})
+            .await
+    }
+
+    pub async fn get_folders(&self) -> Result<IntoIter<Folder>> {
+        self.folder_dao.get_multiple(doc! {}).await
     }
 
     pub async fn get_public_folders(&self) -> Result<IntoIter<Folder>> {
@@ -27,7 +43,9 @@ impl FolderRepo {
     }
 
     pub async fn get_folders_by_owner(&self, owner: &User) -> Result<IntoIter<Folder>> {
-        self.folder_dao.get_multiple(doc! {"owner": owner.id}).await
+        self.folder_dao
+            .get_multiple(doc! {"owner": owner.id})
+            .await
     }
 
     pub async fn get_public_folders_by_owner(&self, owner: &User) -> Result<IntoIter<Folder>> {
