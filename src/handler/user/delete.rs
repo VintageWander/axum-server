@@ -1,5 +1,6 @@
 use axum::{extract::State, http::StatusCode, response::IntoResponse};
 use axum_extra::extract::CookieJar;
+use tokio::spawn;
 
 use crate::{
     error::Error,
@@ -43,12 +44,14 @@ pub async fn delete_user_handler(
     );
 
     // Delete the user
-    user_service.delete_user(cookie_user).await?;
+    spawn(async move { user_service.delete_user(cookie_user).await });
 
     // Remove the cookies, to indicate a logout
     Ok((
         StatusCode::OK,
-        cookies.remove(access_cookie).remove(refresh_cookie),
+        cookies
+            .remove(access_cookie)
+            .remove(refresh_cookie),
         Web::ok("Deleted user successfully", ()),
     )
         .into_response())
