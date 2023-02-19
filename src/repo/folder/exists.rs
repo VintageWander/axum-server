@@ -1,6 +1,6 @@
 use mongodb::bson::{doc, oid::ObjectId};
 
-use crate::{validation::file::check_dir, Result};
+use crate::Result;
 
 use super::FolderRepo;
 
@@ -13,7 +13,6 @@ impl FolderRepo {
     // Prevent conflicts
     // (This function basically check conflicts before creating a new folder)
     pub async fn exists_folder_by_fullpath(&self, fullpath: &str) -> Result<bool> {
-        check_dir(fullpath)?;
         self.folder_dao
             .exists_one(doc! {"fullpath": fullpath})
             .await
@@ -23,7 +22,6 @@ impl FolderRepo {
     // before adding a new folder as a child folder
     // (It basically means check if parent exists)
     pub async fn exists_folder_by_position(&self, position: &str) -> Result<bool> {
-        check_dir(position)?;
         self.folder_dao
             .exists_one(doc! {"position": position})
             .await

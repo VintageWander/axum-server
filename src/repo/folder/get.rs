@@ -4,13 +4,14 @@ use mongodb::bson::{doc, oid::ObjectId, Document};
 
 use crate::{
     model::{folder::Folder, user::User},
-    validation::file::check_dir,
     Result,
 };
 
 use super::FolderRepo;
 
 impl FolderRepo {
+    // This repository works as like an extension on top of the dao layer
+    // Validation will be performed at that service layer
     pub async fn get_folders_by(&self, doc: Document) -> Result<IntoIter<Folder>> {
         self.folder_dao.get_multiple(doc).await
     }
@@ -44,14 +45,12 @@ impl FolderRepo {
     // This function is useful for getting all folders at a given location
     // to create a folder tree
     pub async fn get_folders_by_position(&self, position: &str) -> Result<IntoIter<Folder>> {
-        check_dir(position)?;
         self.folder_dao
             .get_multiple(doc! {"position": position})
             .await
     }
 
     pub async fn get_public_folders_by_position(&self, position: &str) -> Result<IntoIter<Folder>> {
-        check_dir(position)?;
         self.folder_dao
             .get_multiple(doc! {"visibility": "public", "position": position})
             .await
@@ -59,7 +58,6 @@ impl FolderRepo {
 
     // This is useful for peeking the inner contents of a specific folder
     pub async fn get_folders_by_fullpath(&self, fullpath: &str) -> Result<IntoIter<Folder>> {
-        check_dir(fullpath)?;
         self.folder_dao
             .get_multiple(doc! {"visibility": "public", "fullpath": fullpath})
             .await
