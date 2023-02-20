@@ -62,6 +62,13 @@ impl FolderService {
             .await
     }
 
+    pub async fn get_folder_by_fullpath(&self, fullpath: &str) -> Result<Folder> {
+        check_dir(fullpath)?;
+        self.folder_repo
+            .get_folder_by_fullpath(fullpath)
+            .await
+    }
+
     pub async fn get_public_folders_by_position(&self, position: &str) -> Result<IntoIter<Folder>> {
         check_dir(position)?;
         self.folder_repo
@@ -69,11 +76,10 @@ impl FolderService {
             .await
     }
 
-    // This is useful for peeking the inner contents of a specific folder
-    pub async fn get_folders_by_fullpath(&self, fullpath: &str) -> Result<IntoIter<Folder>> {
+    pub async fn get_public_folder_by_fullpath(&self, fullpath: &str) -> Result<Folder> {
         check_dir(fullpath)?;
         self.folder_repo
-            .get_folders_by_fullpath(fullpath)
+            .get_public_folder_by_fullpath(fullpath)
             .await
     }
 }
