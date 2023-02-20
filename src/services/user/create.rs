@@ -15,6 +15,11 @@ impl UserService {
         if is_email_exists || is_username_exists {
             return Err(Error::ConflictUser);
         }
-        self.user_repo.create_user(user).await
+        let new_user = self.user_repo.create_user(user).await?;
+
+        // Spawn a separated task the create a root folder
+        try_join!(self.folder_service.create_root_folder(&new_user))?;
+
+        Ok(new_user)
     }
 }
