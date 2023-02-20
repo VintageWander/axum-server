@@ -1,7 +1,11 @@
 use tokio::try_join;
 
 use super::FolderService;
-use crate::{error::Error, model::folder::Folder, Result};
+use crate::{
+    error::Error,
+    model::{folder::Folder, user::User},
+    Result,
+};
 
 impl FolderService {
     pub async fn create_folder(&self, folder: Folder) -> Result<Folder> {
@@ -42,5 +46,9 @@ impl FolderService {
 
         let new_folder = self.folder_repo.create_folder(folder).await?;
         Ok(new_folder)
+    }
+
+    pub async fn create_root_folder(&self, owner: &User) -> Result<()> {
+        self.folder_repo.create_root_folder(owner).await
     }
 }
