@@ -6,6 +6,7 @@ use crate::{
         cookie::{make_access_cookie, make_refresh_cookie},
         encode::{make_access_token, make_refresh_token},
     },
+    model::user::User,
     request::user::loggedin::LoggedInUser,
     web::Web,
     SharedState, WebResult,
@@ -27,6 +28,14 @@ pub async fn logout_handler(
         make_access_cookie(access_token),
         make_refresh_cookie(refresh_token),
     );
+
+    // Create a user clone to set the refresh token to none
+    let user = User {
+        refresh_token: "".into(),
+        ..cookie_user
+    };
+
+    user_service.update_user(user).await?;
 
     Ok((
         StatusCode::OK,
