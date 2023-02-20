@@ -74,10 +74,19 @@ impl FolderRepo {
             .await
     }
 
-    // This is useful for peeking the inner contents of a specific folder
-    pub async fn get_folders_by_fullpath(&self, fullpath: &str) -> Result<IntoIter<Folder>> {
+    // Since the fullpath is always unique
+    // This function returns one folder
+    pub async fn get_folder_by_fullpath(&self, fullpath: &str) -> Result<Folder> {
         self.folder_dao
-            .get_multiple(doc! {"visibility": "public", "fullpath": fullpath})
+            .get_one(doc! {"fullpath": fullpath})
+            .await
+    }
+
+    // Since the fullpath is always unique
+    // This function returns one folder
+    pub async fn get_public_folder_by_fullpath(&self, fullpath: &str) -> Result<Folder> {
+        self.folder_dao
+            .get_one(doc! {"visibility": "public", "fullpath": fullpath})
             .await
     }
 }
