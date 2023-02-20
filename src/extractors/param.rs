@@ -19,10 +19,10 @@ impl FromRequestParts<SharedState> for ParamID {
         parts: &mut Parts,
         state: &SharedState,
     ) -> Result<Self, Self::Rejection> {
-        let Path(user_id) = Path::<String>::from_request_parts(parts, state).await?;
+        let Path(id) = Path::<String>::from_request_parts(parts, state).await?;
 
-        let user_id = ObjectId::from_str(&user_id)?;
+        let id = ObjectId::from_str(&id)?;
 
-        Ok(Self(user_id))
+        Ok(Self(id))
     }
 }

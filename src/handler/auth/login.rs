@@ -6,7 +6,7 @@ use crate::{
         cookie::{make_access_cookie, make_refresh_cookie},
         encode::{make_access_token, make_refresh_token},
     },
-    model::user::UserBuilder,
+    model::user::User,
     request::user::login::LoginUserRequest,
     web::Web,
     SharedState, WebResult,
@@ -28,9 +28,10 @@ pub async fn login_handler(
         make_refresh_cookie(refresh_token.clone()),
     );
 
-    let user = UserBuilder::from(user)
-        .refresh_token(refresh_token)
-        .build()?;
+    let user = User {
+        refresh_token,
+        ..user
+    };
 
     let update_user = user_service.update_user(user).await?;
 
