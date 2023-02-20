@@ -1,6 +1,11 @@
 use mongodb::bson::{doc, Regex};
+use tokio::try_join;
 
-use crate::{model::folder::Folder, validation::file::check_dir, Result};
+use crate::{
+    model::{folder::Folder, user::User},
+    validation::file::check_dir,
+    Result,
+};
 
 use super::FolderRepo;
 
@@ -22,15 +27,17 @@ impl FolderRepo {
             .await
     }
 
-    pub async fn delete_folder(&self, folder: Folder) -> Result<()> {
-        let deleted_folder = self
-            .folder_dao
+    pub async fn delete_folder(&self, folder: Folder) -> Result<Folder> {
+        self.folder_dao
             .delete_one(doc! {"_id": folder.id})
-            .await?;
+            .await
+    }
 
-        self.delete_folders_by_prefix_fullpath(&deleted_folder.fullpath)
-            .await?;
-
+    // This is more like "delete_folder_by_owner"
+    pub async fn delete_root_folder(&self, owner: &User) -> Result<()> {
+        try_join!(self.folder_dao.delete_multiple(doc! {
+            "owner": &owner.username
+        }))?;
         Ok(())
     }
 }
