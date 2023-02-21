@@ -46,7 +46,7 @@ pub fn check_dir(position: &str) -> Result<(), ValidationError> {
     // Basically it requires a slash must exists at the end
     check_with(
         position,
-        r#"^(([a-zA-Z0-9-_]{3,})*[/])+$"#,
+        r#"^([a-zA-Z0-9-_]{3,}[/])*$"#,
         "The dir input is in wrong format",
     )
 }
