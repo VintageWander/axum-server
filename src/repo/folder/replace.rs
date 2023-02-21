@@ -36,7 +36,7 @@ impl FolderRepo {
                 // This only replaces the section that matches the "from", and replace it
                 // Not the entire string itself
                 doc! {
-                    "$set": {
+                    // "$set": {
                         "position": {
                             "$replaceAll": {
                                 "input": "$position",
@@ -51,7 +51,7 @@ impl FolderRepo {
                                 "replacement": to,
                             }
                         }
-                    }
+                    // }
                 },
             )
             .await

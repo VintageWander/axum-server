@@ -45,10 +45,12 @@ impl FolderService {
                     &folder.fullpath
                 ))?;
             } else {
+                dbg!(&old_folder);
+                dbg!(&folder);
                 try_join!(self.folder_repo.change_inner_folders_position(
                     &old_folder.fullpath,
-                    &old_folder.position,
-                    &folder.position
+                    &old_folder.fullpath,
+                    &folder.fullpath
                 ))?;
             }
         }
