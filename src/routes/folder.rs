@@ -11,8 +11,6 @@ use crate::{
     SharedState,
 };
 
-use super::user::delete_user_route;
-
 pub fn folders_route() -> Router<SharedState> {
     Router::new().nest(
         "/folders",
@@ -20,7 +18,7 @@ pub fn folders_route() -> Router<SharedState> {
             .merge(get_folders_route())
             .merge(create_folder_route())
             .merge(update_folder_route())
-            .merge(delete_user_route()),
+            .merge(delete_folder_route()),
     )
 }
 
