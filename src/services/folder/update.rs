@@ -32,27 +32,13 @@ impl FolderService {
                 return Err(Error::MoveToSelf);
             }
 
-            if old_folder.fullpath.matches('/').count() == folder.fullpath.matches('/').count() {
-                // This indicates a folder rename
-                // What this check means is that if the amount of '/' are equal
-                // Then it means the user is renaming a folder
-                // from: User/folder
-                // to :  User/folder2
-
-                try_join!(self.folder_repo.change_inner_folders_position(
-                    &old_folder.fullpath,
-                    &old_folder.fullpath,
-                    &folder.fullpath
-                ))?;
-            } else {
-                dbg!(&old_folder);
-                dbg!(&folder);
-                try_join!(self.folder_repo.change_inner_folders_position(
-                    &old_folder.fullpath,
-                    &old_folder.fullpath,
-                    &folder.fullpath
-                ))?;
-            }
+            dbg!(&old_folder);
+            dbg!(&folder);
+            try_join!(self.folder_repo.change_inner_folders_position(
+                &old_folder.fullpath,
+                &old_folder.fullpath,
+                &folder.fullpath
+            ))?;
         }
         self.folder_repo.update_folder(folder).await
     }
