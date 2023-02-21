@@ -78,7 +78,7 @@ where
     // You only need to provide it with the actual document that you want to change
     pub async fn update_multiple(&self, search_doc: Document, update_doc: Document) -> Result<()> {
         self.collection
-            .update_many(search_doc, doc! {"$set": update_doc}, None)
+            .update_many(search_doc, vec![doc! {"$set": update_doc}], None)
             .await?;
         Ok(())
     }
