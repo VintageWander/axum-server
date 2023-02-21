@@ -16,7 +16,8 @@ pub async fn get_folders_handler(
         // fetch all user's folders (including private)
         let users_folders = folder_service
             .get_folders_by_owner(&cookie_user)
-            .await?;
+            .await?
+            .filter(|f| f.folder_name != cookie_user.username);
 
         // fetch all public folders from everyone else (NOT including the user)
         let public_folders = folder_service
