@@ -110,7 +110,7 @@ impl Folder {
 
         folder.validate()?;
 
-        todo!()
+        Ok(folder)
     }
 
     pub fn new_root(owner: &User) -> Result<Self> {
