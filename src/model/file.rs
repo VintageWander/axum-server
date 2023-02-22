@@ -45,6 +45,32 @@ pub enum FileExtension {
     Txt,
 }
 
+impl From<FileExtension> for &str {
+    fn from(f: FileExtension) -> Self {
+        match f {
+            FileExtension::Png => "png",
+            FileExtension::Jpg => "jpg",
+            FileExtension::Jpeg => "jpeg",
+            FileExtension::Mp3 => "mp3",
+            FileExtension::Txt => "txt",
+        }
+    }
+}
+
+impl TryFrom<&str> for FileExtension {
+    type Error = Error;
+    fn try_from(str: &str) -> std::result::Result<Self, Self::Error> {
+        Ok(match str {
+            "png" => FileExtension::Png,
+            "jpg" => FileExtension::Jpg,
+            "jpeg" => FileExtension::Jpeg,
+            "mp3" => FileExtension::Mp3,
+            "txt" => FileExtension::Txt,
+            _ => return Err(Error::Field(validation_message("Unsupported extension"))),
+        })
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename = "lowercase")]
 pub enum FileVisibility {
@@ -53,17 +79,57 @@ pub enum FileVisibility {
     Private,
 }
 
+impl Default for FileVisibility {
+    fn default() -> Self {
+        FileVisibility::Public
+    }
+}
+
+impl From<FileVisibility> for &str {
+    fn from(f: FileVisibility) -> Self {
+        match f {
+            FileVisibility::Public => "public",
+            FileVisibility::Shared => "shared",
+            FileVisibility::Private => "private",
+        }
+    }
+}
+
+impl TryFrom<&str> for FileVisibility {
+    type Error = Error;
+    fn try_from(str: &str) -> std::result::Result<Self, Self::Error> {
+        Ok(match str {
+            "public" => FileVisibility::Public,
+            "private" => FileVisibility::Private,
+            "shared" => FileVisibility::Shared,
+            _ => return Err(Error::Field(validation_message("Invalid visibility type"))),
+        })
+    }
+}
+
+impl TryFrom<String> for FileVisibility {
+    type Error = Error;
+    fn try_from(str: String) -> std::result::Result<Self, Self::Error> {
+        Ok(match str.as_str() {
+            "public" => FileVisibility::Public,
+            "private" => FileVisibility::Private,
+            "shared" => FileVisibility::Shared,
+            _ => return Err(Error::Field(validation_message("Invalid visibility type"))),
+        })
+    }
+}
+
 impl From<File> for Document {
     fn from(f: File) -> Self {
-        let extension = f.extension_to_str();
-        let visibility = f.visibility_to_str();
+        let extension: &str = f.extension.into();
+        let visibility: &str = f.visibility.into();
 
         doc! {
-            "extension": extension,
-            "visibility": visibility,
             "owner": f.owner,
             "filename": f.filename,
+            "extension": extension,
             "fullFilename": f.full_filename,
+            "visibility": visibility,
             "position": f.position,
             "fullpath": f.fullpath,
             "createdAt": f.created_at,
@@ -73,44 +139,6 @@ impl From<File> for Document {
 }
 
 impl File {
-    pub fn extension_to_str(&self) -> &str {
-        match self.extension {
-            FileExtension::Png => "png",
-            FileExtension::Jpg => "jpg",
-            FileExtension::Jpeg => "jpeg",
-            FileExtension::Mp3 => "mp3",
-            FileExtension::Txt => "txt",
-        }
-    }
-
-    pub fn str_to_extension(extension: &str) -> Result<FileExtension> {
-        Ok(match extension {
-            "png" => FileExtension::Png,
-            "jpg" => FileExtension::Jpg,
-            "jpeg" => FileExtension::Jpeg,
-            "mp3" => FileExtension::Mp3,
-            "txt" => FileExtension::Txt,
-            _ => return Err(Error::Field(validation_message("Unsupported extension"))),
-        })
-    }
-
-    pub fn visibility_to_str(&self) -> &str {
-        match self.visibility {
-            FileVisibility::Public => "public",
-            FileVisibility::Shared => "shared",
-            FileVisibility::Private => "private",
-        }
-    }
-
-    pub fn str_to_visibility(visibility: &str) -> Result<FileVisibility> {
-        Ok(match visibility {
-            "public" => FileVisibility::Public,
-            "private" => FileVisibility::Private,
-            "shared" => FileVisibility::Shared,
-            _ => return Err(Error::Field(validation_message("Invalid visibility type"))),
-        })
-    }
-
     pub fn new(
         id: &ObjectId,
         owner: &User,
@@ -130,7 +158,7 @@ impl File {
         // filename = hello
         // extension = txt
 
-        let extension = File::str_to_extension(extension)?;
+        let extension: FileExtension = extension.try_into()?;
         // extension = FileExtension::Txt,
 
         let position_with_owner = format!("{}/{}", owner.username, position);
