@@ -28,7 +28,7 @@ pub struct FolderResponse {
 impl From<Folder> for FolderResponse {
     fn from(f: Folder) -> Self {
         Self {
-            visibility: f.visibility_to_str().to_string(),
+            visibility: f.visibility.into(),
             id: f.id.to_string(),
             owner: f.owner.to_string(),
             folder_name: f.folder_name,
