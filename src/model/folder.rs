@@ -40,10 +40,31 @@ pub enum FolderVisibility {
     Private,
 }
 
-impl TryFrom<String> for FolderVisibility {
+impl From<FolderVisibility> for &str {
+    fn from(f: FolderVisibility) -> Self {
+        match f {
+            FolderVisibility::Public => "public",
+            FolderVisibility::Shared => "shared",
+            FolderVisibility::Private => "private",
+        }
+    }
+}
+
+impl From<FolderVisibility> for String {
+    fn from(f: FolderVisibility) -> Self {
+        match f {
+            FolderVisibility::Public => "public",
+            FolderVisibility::Shared => "shared",
+            FolderVisibility::Private => "private",
+        }
+        .to_string()
+    }
+}
+
+impl TryFrom<&str> for FolderVisibility {
     type Error = Error;
-    fn try_from(visibility: String) -> std::result::Result<Self, Self::Error> {
-        Ok(match visibility.as_str() {
+    fn try_from(visibility: &str) -> std::result::Result<Self, Self::Error> {
+        Ok(match visibility {
             "public" => FolderVisibility::Public,
             "shared" => FolderVisibility::Shared,
             "private" => FolderVisibility::Private,
@@ -52,15 +73,22 @@ impl TryFrom<String> for FolderVisibility {
     }
 }
 
+impl TryFrom<String> for FolderVisibility {
+    type Error = Error;
+    fn try_from(visibility: String) -> std::result::Result<Self, Self::Error> {
+        visibility.as_str().try_into()
+    }
+}
+
 impl From<Folder> for Document {
     fn from(f: Folder) -> Self {
-        let visibility = f.visibility_to_str();
+        let visibility: &str = f.visibility.into();
 
         doc! {
-            "visibilty": visibility,
             "owner": f.owner,
             "folderName": f.folder_name,
             "position": f.position,
+            "visibilty": visibility,
             "fullpath": f.fullpath,
             "createAt": f.created_at,
             "updatedAt": f.updated_at,
@@ -69,14 +97,6 @@ impl From<Folder> for Document {
 }
 
 impl Folder {
-    pub fn visibility_to_str(&self) -> &str {
-        match self.visibility {
-            FolderVisibility::Public => "public",
-            FolderVisibility::Shared => "shared",
-            FolderVisibility::Private => "private",
-        }
-    }
-
     pub fn new(
         id: &ObjectId,
         owner: &User,
