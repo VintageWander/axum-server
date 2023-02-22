@@ -22,6 +22,10 @@ pub enum Error {
     #[error("Input field error")]
     Field(#[from] validator::ValidationError),
 
+    #[error("Invalid multipart form")]
+    Multipart(#[from] axum::extract::multipart::MultipartError),
+
+
     // Bad requests error
     #[error("Invalid json form")]
     InvalidJson(#[from] axum::extract::rejection::JsonRejection),
@@ -32,8 +36,12 @@ pub enum Error {
     #[error("Invalid path string form")]
     InvalidPath(#[from] axum::extract::rejection::PathRejection),
 
+    #[error("Invalid multipart form")]
+    InvalidMultipart(#[from] axum::extract::multipart::MultipartRejection),
+    
     #[error("Invalid id entered")]
     InvalidId(#[from] mongodb::bson::oid::Error),
+
 
     // Custom error
 
@@ -82,12 +90,16 @@ impl IntoResponse for Error {
                 extract_validation_error(&e),
             ),
             Error::Field(e) => Web::bad_request("One of the field are incorrect", e),
+            Error::Multipart(e) => Web::bad_request("Invalid multipart form provided", e),
+
             
             // Bad requests error
             Error::InvalidJson(e) => Web::bad_request("Invalid json form", e),
             Error::InvalidQuery(e) => Web::bad_request("Invalid query form", e),
             Error::InvalidId(e) => Web::bad_request("The id provided is invalid", e),
             Error::InvalidPath(e) => Web::bad_request("Invalid path string provided", e),
+            Error::InvalidMultipart(e) => Web::bad_request("Invalid multipart form provided", e),
+
 
             // Custom error
             
