@@ -1,14 +1,21 @@
 use axum::extract::State;
 
-use crate::{request::file::create::CreateFileRequest, web::Web, SharedState, WebResult};
+use crate::{
+    request::{file::create::CreateFileRequest, user::loggedin::LoggedInUser},
+    web::Web,
+    SharedState, WebResult,
+};
 
 pub async fn create_file_handler(
-    State(SharedState { .. }): State<SharedState>,
+    State(SharedState { file_service, .. }): State<SharedState>,
+    LoggedInUser(cookie_user): LoggedInUser,
     file_req: CreateFileRequest,
 ) -> WebResult {
-    dbg!(&file_req.position);
-    dbg!(&file_req.visility);
-    dbg!(&file_req.filename);
+    let (file_model, bytes) = file_req.into_file(&cookie_user)?;
 
-    Ok(Web::ok("Create file successfully", ()))
+    let new_file = file_service
+        .create_file(file_model, bytes)
+        .await?;
+
+    Ok(Web::ok("Upload file successfully", new_file))
 }
