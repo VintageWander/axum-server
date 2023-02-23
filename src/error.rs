@@ -5,7 +5,11 @@ use crate::{helper::print_validation::extract_validation_error, web::Web};
 
 #[derive(Debug, Error)]
 pub enum Error {
-    // Internal error
+
+    /*
+        Internal error
+    */
+    
     #[error("DB error")]
     Mongo(#[from] mongodb::error::Error),
 
@@ -18,7 +22,17 @@ pub enum Error {
     #[error("IO error")]
     IO(#[from] std::io::Error),
 
-    // Validation error
+    /*
+        AWS S3
+    */
+
+    #[error("AWS S3 error")]
+    S3(#[from] s3::error::S3Error),
+
+    /*
+        Validation error
+    */
+    
     #[error("Input fields error")]
     Fields(#[from] validator::ValidationErrors),
 
@@ -28,8 +42,10 @@ pub enum Error {
     #[error("Invalid multipart form")]
     Multipart(#[from] axum::extract::multipart::MultipartError),
 
+    /*
+        Bad requests error
+    */
 
-    // Bad requests error
     #[error("Invalid json form")]
     InvalidJson(#[from] axum::extract::rejection::JsonRejection),
 
@@ -45,14 +61,21 @@ pub enum Error {
     #[error("Invalid id entered")]
     InvalidId(#[from] mongodb::bson::oid::Error),
 
-
-    // Custom error
-
-    // General resource
+    /*
+        Custom error
+    */
+    
+    /*
+        General resource
+    */
+    
     #[error("Resource not found")]
     ResourceNotFound,
 
-    // User
+    /*
+        User
+    */
+
     #[error("Conflict user")]
     ConflictUser,
 
@@ -68,7 +91,10 @@ pub enum Error {
     #[error("Split error")]
     Split,
 
-    // Folder
+    /*
+        Folder
+    */
+
     #[error("Conflict folder")]
     ConflictFolder,
 
@@ -84,9 +110,12 @@ impl IntoResponse for Error {
         match self {
             // Internal error
             Error::Mongo(e) => Web::internal_error("MongoDB error", e),
-            Error::Jwt(e) => Web::internal_error("JWT error occur", e),
+            Error::Jwt(e) => Web::internal_error("JWT error occur", format!("{}: means that you have to login", e)),
             Error::Infallible(e) => Web::internal_error("Infallible error", "If you see this error please let me know"),
             Error::IO(e) => Web::internal_error("IO error", e),
+
+            // AWS S3
+            Error::S3(e) => Web::internal_error("AWS S3 error", e),
             
             // Validation error
             Error::Fields(e) => Web::bad_request(
