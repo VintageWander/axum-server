@@ -15,6 +15,9 @@ pub enum Error {
     #[error("Infallible error")]
     Infallible(#[from] std::convert::Infallible),
 
+    #[error("IO error")]
+    IO(#[from] std::io::Error),
+
     // Validation error
     #[error("Input fields error")]
     Fields(#[from] validator::ValidationErrors),
@@ -83,6 +86,7 @@ impl IntoResponse for Error {
             Error::Mongo(e) => Web::internal_error("MongoDB error", e),
             Error::Jwt(e) => Web::internal_error("JWT error occur", e),
             Error::Infallible(e) => Web::internal_error("Infallible error", "If you see this error please let me know"),
+            Error::IO(e) => Web::internal_error("IO error", e),
             
             // Validation error
             Error::Fields(e) => Web::bad_request(
