@@ -35,8 +35,11 @@ pub struct Folder {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum FolderVisibility {
+    #[serde(rename = "public")]
     Public,
+    #[serde(rename = "shared")]
     Shared,
+    #[serde(rename = "private")]
     Private,
 }
 
