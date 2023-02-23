@@ -1,4 +1,4 @@
-use crate::{dao::Dao, db::mongo::Mongo, model::folder::Folder};
+use crate::{dao::mongo::Dao, db::mongo::Mongo, model::folder::Folder};
 
 pub mod create;
 pub mod delete;

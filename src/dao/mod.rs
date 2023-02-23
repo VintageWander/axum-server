@@ -1,2 +1,2 @@
-pub mod aws;
 pub mod mongo;
+pub mod s3;

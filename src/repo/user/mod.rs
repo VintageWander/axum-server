@@ -4,7 +4,7 @@ pub mod exists;
 pub mod get;
 pub mod update;
 
-use crate::{dao::Dao, db::mongo::Mongo, model::user::User};
+use crate::{dao::mongo::Dao, db::mongo::Mongo, model::user::User};
 
 #[derive(Debug, Clone)]
 pub struct UserRepo {
