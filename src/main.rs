@@ -7,7 +7,11 @@ use dotenv::{dotenv, var};
 use error::Error;
 use services::user::UserService;
 
-use crate::{db::mongo::Mongo, routes::app_routes, services::folder::FolderService};
+use crate::{
+    db::{aws::S3, mongo::Mongo},
+    routes::app_routes,
+    services::{file::FileService, folder::FolderService},
+};
 
 mod dao;
 mod db;
@@ -31,6 +35,7 @@ type WebResult = Result<Response>;
 pub struct SharedState {
     user_service: UserService,
     folder_service: FolderService,
+    file_service: FileService,
 }
 
 #[tokio::main]
@@ -38,9 +43,11 @@ async fn main() -> Result<()> {
     // Anything fails in main should crash, until all is resolved
     dotenv().ok();
 
-    let db = Mongo::init().await?;
+    let db = Mongo::init().await;
+    let s3 = S3::init();
     let user_service = UserService::init(&db);
     let folder_service = FolderService::init(&db);
+    let file_service = FileService::init(&db, &s3);
 
     let port = var("PORT")
         .expect("Cannot read the PORT in the env")
@@ -52,6 +59,7 @@ async fn main() -> Result<()> {
     let router = app_routes().with_state(SharedState {
         user_service,
         folder_service,
+        file_service,
     });
 
     Server::bind(&addr)
