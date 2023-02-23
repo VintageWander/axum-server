@@ -1,7 +1,7 @@
 pub mod create;
 
 use crate::{
-    dao::s3::Storage,
+    dao::storage::Storage,
     db::{aws::S3, mongo::Mongo},
     repo::file::FileRepo,
 };
