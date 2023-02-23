@@ -6,9 +6,12 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-# Server
+# Async runtime
 tokio = { version = "1.25.0", features = ["full"] }
 tokio-util = { version = "0.7.7", features = ["io"] }
+futures-util = "0.3.26"
+
+# Backend server
 axum = { version = "0.6.4", features = [
 	"json",
 	"query",
@@ -16,12 +19,18 @@ axum = { version = "0.6.4", features = [
 	"multipart",
 ] }
 axum-extra = { version = "0.5.0", features = ["cookie"] }
-futures-util = "0.3.26"
+
+# Database
 mongodb = "2.3.1"
-mime_guess = "2.0.4"
+rust-s3 = "0.32.3"
+
+# Credentials
 dotenv = "0.15.0"
 
-# Auth
+# Data posting
+mime_guess = "2.0.4"
+
+# User Authentication
 jsonwebtoken = "8.2.0"
 cookie = "0.17.0"
 
