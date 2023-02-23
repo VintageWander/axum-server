@@ -4,10 +4,22 @@ use axum::{
     extract::{FromRequest, Multipart},
     http::Request,
 };
+
+use chrono::Utc;
+use mongodb::bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
+
 use validator::Validate;
 
-use crate::{error::Error, model::file::FileVisibility, validation::file::*, SharedState};
+use crate::{
+    error::Error,
+    model::{
+        file::{File, FileVisibility},
+        user::User,
+    },
+    validation::file::*,
+    Result, SharedState,
+};
 
 #[derive(Debug, Default, Serialize, Deserialize, Validate)]
 pub struct CreateFileRequest {
@@ -28,7 +40,7 @@ impl FromRequest<SharedState, Body> for CreateFileRequest {
     async fn from_request(
         req: Request<Body>,
         state: &SharedState,
-    ) -> Result<Self, Self::Rejection> {
+    ) -> std::result::Result<Self, Self::Rejection> {
         let mut multipart = Multipart::from_request(req, state).await?;
 
         let mut file_req = CreateFileRequest::default();
@@ -51,5 +63,21 @@ impl FromRequest<SharedState, Body> for CreateFileRequest {
         file_req.validate()?;
 
         Ok(file_req)
+    }
+}
+
+impl CreateFileRequest {
+    pub fn into_file(self, owner: &User) -> Result<(File, Vec<u8>)> {
+        Ok((
+            File::new(
+                &ObjectId::new(),
+                owner,
+                &self.filename,
+                self.visility,
+                &self.position,
+                Utc::now().timestamp_millis(),
+            )?,
+            self.file,
+        ))
     }
 }
