@@ -7,7 +7,7 @@ use crate::{error::Error, helper::make_error::validation_message, validation::fi
 
 use super::user::User;
 
-#[derive(Debug, Serialize, Deserialize, Validate)]
+#[derive(Debug, Clone, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct File {
     #[serde(rename = "_id")]
@@ -35,14 +35,32 @@ pub struct File {
     pub updated_at: i64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename = "lowercase")]
 pub enum FileExtension {
+    #[serde(rename = "png")]
     Png,
+    #[serde(rename = "jpg")]
     Jpg,
+    #[serde(rename = "jpeg")]
     Jpeg,
+    #[serde(rename = "mp3")]
     Mp3,
+    #[serde(rename = "txt")]
     Txt,
+}
+
+impl ToString for FileExtension {
+    fn to_string(&self) -> String {
+        match self {
+            FileExtension::Png => "png",
+            FileExtension::Jpg => "jpg",
+            FileExtension::Jpeg => "jpeg",
+            FileExtension::Mp3 => "mp3",
+            FileExtension::Txt => "txt",
+        }
+        .to_string()
+    }
 }
 
 impl From<FileExtension> for &str {
@@ -57,6 +75,12 @@ impl From<FileExtension> for &str {
     }
 }
 
+impl From<FileExtension> for String {
+    fn from(f: FileExtension) -> Self {
+        let str: &str = f.into();
+        str.to_string()
+    }
+}
 impl TryFrom<&str> for FileExtension {
     type Error = Error;
     fn try_from(str: &str) -> std::result::Result<Self, Self::Error> {
@@ -71,11 +95,14 @@ impl TryFrom<&str> for FileExtension {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename = "lowercase")]
 pub enum FileVisibility {
+    #[serde(rename = "public")]
     Public,
+    #[serde(rename = "shared")]
     Shared,
+    #[serde(rename = "private")]
     Private,
 }
 
@@ -92,6 +119,13 @@ impl From<FileVisibility> for &str {
             FileVisibility::Shared => "shared",
             FileVisibility::Private => "private",
         }
+    }
+}
+
+impl From<FileVisibility> for String {
+    fn from(f: FileVisibility) -> Self {
+        let str: &str = f.into();
+        str.to_string()
     }
 }
 
