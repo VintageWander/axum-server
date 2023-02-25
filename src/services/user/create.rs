@@ -17,8 +17,10 @@ impl UserService {
         }
         let new_user = self.user_repo.create_user(user).await?;
 
-        // Spawn a separated task the create a root folder
-        try_join!(self.folder_service.create_root_folder(&new_user))?;
+        // Create a root folder
+        self.folder_service
+            .create_root_folder(&new_user)
+            .await?;
 
         Ok(new_user)
     }
