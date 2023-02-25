@@ -22,7 +22,7 @@ pub async fn refresh_handler(
 
     let user_id = decode_refresh_token(refresh_token.clone())?;
 
-    let user = user_service.get_user_by_id(&user_id).await?;
+    let user = user_service.get_user_by_id(user_id).await?;
 
     if user.refresh_token != refresh_token {
         return Err(Error::Unauthorized);

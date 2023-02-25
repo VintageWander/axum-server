@@ -12,7 +12,7 @@ pub async fn delete_folder_handler(
     LoggedInUser(cookie_user): LoggedInUser,
 ) -> WebResult {
     let target_folder = folder_service
-        .get_folder_by_id_owner(&folder_id, &cookie_user)
+        .get_folder_by_id_owner(folder_id, &cookie_user)
         .await?;
 
     // Spawn a thread to delete the folder
