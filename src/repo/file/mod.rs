@@ -1,4 +1,9 @@
 pub mod create;
+pub mod delete;
+pub mod exists;
+pub mod get;
+pub mod replace;
+pub mod update;
 
 use crate::{dao::mongo::Dao, db::mongo::Mongo, model::file::File};
 
