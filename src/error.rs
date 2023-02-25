@@ -103,6 +103,16 @@ pub enum Error {
 
     #[error("Cannot move to self")]
     MoveToSelf,
+
+    /*
+        File
+    */
+
+    #[error("Conflict file")]
+    ConflictFile,
+
+    #[error("Extension difference")]
+    ExtensionDiff
 }
 
 impl IntoResponse for Error {
@@ -151,8 +161,12 @@ impl IntoResponse for Error {
             
             // Folder
             Error::ConflictFolder => Web::conflict("Folder conflict", "This means that the folder with the same name in the exact position already exists, please try another name"),
-            Error::ParentFolderNotFound => Web::not_found("Parent folder not found", "The folder that lives in the position provided in the new folder request could not be found"),
+            Error::ParentFolderNotFound => Web::not_found("Parent folder not found", "The folder that lives in the position provided in the new folder or file request could not be found"),
             Error::MoveToSelf => Web::not_found("Cannot move to self", "You cannot move a folder into itself, or moving parent folder into child"),
+
+            // File
+            Error::ConflictFile => Web::conflict("File conflict", "This means that you may have a file with the same name living in the same folder"),
+            Error::ExtensionDiff => Web::bad_request("Extension has been changed", "Changing the extension is not supported, as it might render the file unusable"),
         }
     }
 }
