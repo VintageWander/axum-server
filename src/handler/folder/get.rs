@@ -17,19 +17,21 @@ pub async fn get_folders_handler(
         let users_folders = folder_service
             .get_folders_by_owner(&cookie_user)
             .await?
-            .filter(|f| f.folder_name != cookie_user.username);
+            .into_iter()
+            .filter(|f| f.folder_name != cookie_user.username)
+            .map(|f| f.into_response());
 
         // fetch all public folders from everyone else (NOT including the user)
         let public_folders = folder_service
             .get_public_folders()
             .await?
-            .filter(|f| f.owner != cookie_user.id);
+            .into_iter()
+            .filter(|f| f.folder_name != cookie_user.username)
+            .map(|f| f.into_response());
 
         // chain 2 iterators and collect them as a vec
-        users_folders
-            .chain(public_folders)
-            .map(|f| f.into_response())
-            .collect()
+
+        users_folders.chain(public_folders).collect()
     } else {
         // If the user is not logged in
 
@@ -37,6 +39,7 @@ pub async fn get_folders_handler(
         folder_service
             .get_public_folders()
             .await?
+            .into_iter()
             .map(|f| f.into_response())
             .collect()
     };

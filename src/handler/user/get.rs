@@ -9,6 +9,7 @@ pub async fn get_users_handler(
     let users = user_service
         .get_users_by(user_query)
         .await?
+        .into_iter()
         .map(|u| u.into_response())
         .collect::<Vec<_>>();
 
