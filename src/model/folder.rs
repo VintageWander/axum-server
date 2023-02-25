@@ -101,15 +101,15 @@ impl From<Folder> for Document {
 
 impl Folder {
     pub fn new(
-        id: &ObjectId,
+        id: ObjectId,
         owner: &User,
-        folder_name: &str,
-        position: &str,
+        folder_name: String,
+        position: String,
         visibility: FolderVisibility,
         created_at: i64,
     ) -> Result<Self> {
-        check_folder_name(folder_name)?;
-        check_dir(position)?;
+        check_folder_name(&folder_name)?;
+        check_dir(&position)?;
 
         // folder_name = something
         // position = folder/
@@ -121,9 +121,9 @@ impl Folder {
         // fullpath = User/folder/something/
 
         let folder = Folder {
-            id: *id,
+            id,
             owner: owner.id,
-            folder_name: folder_name.into(),
+            folder_name,
             position: position_with_owner,
             visibility,
             fullpath,
