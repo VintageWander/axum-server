@@ -17,9 +17,9 @@ impl Mongo {
         }
     }
 
-    pub fn get_collection<T>(&self, collection_name: &str) -> Collection<T> {
+    pub fn get_collection<T>(&self, collection_name: impl AsRef<str>) -> Collection<T> {
         self.client
             .database("simple-file-sharing")
-            .collection(collection_name)
+            .collection(collection_name.as_ref())
     }
 }
