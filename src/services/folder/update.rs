@@ -5,11 +5,9 @@ use crate::{error::Error, model::folder::Folder, Result};
 
 impl FolderService {
     pub async fn update_folder(&self, folder: Folder) -> Result<Folder> {
-        let folder_id = folder.id;
-
         let old_folder = self
             .folder_repo
-            .get_folder_by_id(&folder_id)
+            .get_folder_by_id(folder.id)
             .await?;
 
         if old_folder.fullpath != folder.fullpath {
@@ -32,11 +30,18 @@ impl FolderService {
                 return Err(Error::MoveToSelf);
             }
 
-            try_join!(self.folder_repo.change_inner_folders_position(
-                &old_folder.fullpath,
-                &old_folder.fullpath,
-                &folder.fullpath
-            ))?;
+            try_join!(
+                self.folder_repo.change_inner_folders_position(
+                    &old_folder.fullpath,
+                    &old_folder.fullpath,
+                    &folder.fullpath
+                ),
+                self.file_service.change_inner_files_position(
+                    &old_folder.fullpath,
+                    &old_folder.fullpath,
+                    &folder.fullpath
+                )
+            )?;
         }
         self.folder_repo.update_folder(folder).await
     }
