@@ -1,5 +1,3 @@
-use std::vec::IntoIter;
-
 use futures_util::TryStreamExt;
 use mongodb::{
     bson::{doc, Document},
@@ -19,20 +17,19 @@ impl<T> Dao<T>
 where
     T: Serialize + DeserializeOwned + Unpin + Send + Sync + Into<Document>,
 {
-    pub fn init(db: &Mongo, collection_name: &str) -> Self {
+    pub fn init(db: &Mongo, collection_name: impl AsRef<str>) -> Self {
         Self {
             collection: db.get_collection(collection_name),
         }
     }
 
-    pub async fn get_multiple(&self, doc: Document) -> Result<IntoIter<T>> {
+    pub async fn get_multiple(&self, doc: Document) -> Result<Vec<T>> {
         let resources = self
             .collection
             .find(doc, None)
             .await?
-            .try_collect::<Vec<_>>()
-            .await?
-            .into_iter();
+            .try_collect()
+            .await?;
         Ok(resources)
     }
 
