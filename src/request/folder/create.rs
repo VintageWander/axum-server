@@ -43,10 +43,10 @@ impl FromRequest<SharedState, Body> for CreateFolderRequest {
 impl CreateFolderRequest {
     pub fn into_folder_with_owner(self, owner: &User) -> Result<Folder> {
         Folder::new(
-            &ObjectId::new(),
+            ObjectId::new(),
             owner,
-            &self.folder_name,
-            &self.position,
+            self.folder_name,
+            self.position,
             self.visibility.try_into()?,
             Utc::now().timestamp_millis(),
         )

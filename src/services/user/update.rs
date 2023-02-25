@@ -7,7 +7,7 @@ use super::UserService;
 impl UserService {
     pub async fn update_user(&self, user: User) -> Result<User> {
         // Get the old user
-        let old_user = self.user_repo.get_user_by_id(&user.id).await?;
+        let old_user = self.user_repo.get_user_by_id(user.id).await?;
 
         // See if the new username and the new email conflicts
         let (is_email_exists, is_username_exists) = try_join!(

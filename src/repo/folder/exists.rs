@@ -5,7 +5,7 @@ use crate::Result;
 use super::FolderRepo;
 
 impl FolderRepo {
-    pub async fn exists_folder_by_id(&self, folder_id: &ObjectId) -> Result<bool> {
+    pub async fn exists_folder_by_id(&self, folder_id: ObjectId) -> Result<bool> {
         self.folder_dao
             .exists_one(doc! {"_id": folder_id})
             .await

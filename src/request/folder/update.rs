@@ -41,10 +41,10 @@ impl FromRequest<SharedState, Body> for UpdateFolderRequest {
 impl UpdateFolderRequest {
     pub fn into_folder_with_owner(self, old_folder: Folder, owner: &User) -> Result<Folder> {
         Folder::new(
-            &old_folder.id,
+            old_folder.id,
             owner,
-            &self.folder_name,
-            &self.position,
+            self.folder_name,
+            self.position,
             self.visibility.try_into()?,
             old_folder.created_at,
         )

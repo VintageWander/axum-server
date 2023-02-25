@@ -5,7 +5,7 @@ use crate::validation::file::check_dir;
 use crate::Result;
 
 impl FolderService {
-    pub async fn exists_folder_by_id(&self, folder_id: &ObjectId) -> Result<bool> {
+    pub async fn exists_folder_by_id(&self, folder_id: ObjectId) -> Result<bool> {
         self.folder_repo
             .exists_folder_by_id(folder_id)
             .await

@@ -70,11 +70,11 @@ impl CreateFileRequest {
     pub fn into_file(self, owner: &User) -> Result<(File, Vec<u8>)> {
         Ok((
             File::new(
-                &ObjectId::new(),
+                ObjectId::new(),
                 owner,
-                &self.filename,
+                self.filename,
                 self.visility,
-                &self.position,
+                self.position,
                 Utc::now().timestamp_millis(),
             )?,
             self.file,
