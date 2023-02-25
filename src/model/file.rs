@@ -35,7 +35,7 @@ pub struct File {
     pub updated_at: i64,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename = "lowercase")]
 pub enum FileExtension {
     #[serde(rename = "png")]
@@ -77,8 +77,7 @@ impl From<FileExtension> for &str {
 
 impl From<FileExtension> for String {
     fn from(f: FileExtension) -> Self {
-        let str: &str = f.into();
-        str.to_string()
+        f.to_string()
     }
 }
 impl TryFrom<&str> for FileExtension {
@@ -95,7 +94,7 @@ impl TryFrom<&str> for FileExtension {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename = "lowercase")]
 pub enum FileVisibility {
     #[serde(rename = "public")]
@@ -174,14 +173,14 @@ impl From<File> for Document {
 
 impl File {
     pub fn new(
-        id: &ObjectId,
+        id: ObjectId,
         owner: &User,
-        full_filename: &str,
+        full_filename: String,
         visibility: FileVisibility,
-        position: &str,
+        position: String,
         created_at: i64,
     ) -> Result<Self> {
-        check_full_filename(full_filename)?;
+        check_full_filename(full_filename.as_ref())?;
         // full_filename = hello.txt
         // position = folder/
         // owner.username = User
@@ -202,11 +201,11 @@ impl File {
         // fullpath = User/folder/hello.txt
 
         let file = Self {
-            id: *id,
+            id,
             owner: owner.id,
             filename: filename.into(),
             extension,
-            full_filename: full_filename.into(),
+            full_filename,
             visibility,
             position: position_with_owner,
             fullpath,

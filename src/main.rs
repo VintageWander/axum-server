@@ -8,7 +8,7 @@ use error::Error;
 use services::user::UserService;
 
 use crate::{
-    db::{aws::S3, mongo::Mongo},
+    db::mongo::Mongo,
     routes::app_routes,
     services::{file::FileService, folder::FolderService},
 };
@@ -44,10 +44,9 @@ async fn main() -> Result<()> {
     dotenv().ok();
 
     let db = Mongo::init().await;
-    let s3 = S3::init();
     let user_service = UserService::init(&db);
     let folder_service = FolderService::init(&db);
-    let file_service = FileService::init(&db, &s3);
+    let file_service = FileService::init(&db);
 
     let port = var("PORT")
         .expect("Cannot read the PORT in the env")
