@@ -1,5 +1,3 @@
-use tokio::try_join;
-
 use crate::{
     model::{folder::Folder, user::User},
     Result,
@@ -15,9 +13,9 @@ impl FolderRepo {
     // This function is called when a new user is created
     // So that everything has a parent folder
     pub async fn create_root_folder(&self, owner: &User) -> Result<()> {
-        try_join!(self
-            .folder_dao
-            .create_one(Folder::new_root(owner)?))?;
+        self.folder_dao
+            .create_one(Folder::new_root(owner)?)
+            .await?;
         Ok(())
     }
 }
