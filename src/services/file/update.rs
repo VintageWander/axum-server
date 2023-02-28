@@ -29,15 +29,17 @@ impl FileService {
         }
 
         if !bytes.is_empty() {
-            // This function will move the current file to a new place
-            // which is at <file_id>/<version_number>.<file_extension>
-
             let internal_file_path = &format!("{}.{}", file.id, file.extension.to_string());
 
-            try_join!(
-                self.file_version_service.create_version(&file),
-                self.storage.put_object(internal_file_path, bytes)
-            )?;
+            // This function will move the current file to a new place
+            // which is at <file_id>/<version_number>.<file_extension>
+            self.file_version_service
+                .create_version(&file)
+                .await?;
+            // This is to put the new file into the storage
+            self.storage
+                .put_object(internal_file_path, bytes)
+                .await?;
         }
 
         // Update the file model
