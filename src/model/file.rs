@@ -3,7 +3,10 @@ use mongodb::bson::{doc, oid::ObjectId, Document};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{error::Error, helper::make_error::validation_message, validation::file::*, Result};
+use crate::{
+    error::Error, helper::make_error::validation_message, response::file::FileResponse,
+    validation::file::*, Result,
+};
 
 use super::user::User;
 
@@ -128,18 +131,6 @@ impl From<FileVisibility> for String {
     }
 }
 
-impl TryFrom<&str> for FileVisibility {
-    type Error = Error;
-    fn try_from(str: &str) -> std::result::Result<Self, Self::Error> {
-        Ok(match str {
-            "public" => FileVisibility::Public,
-            "private" => FileVisibility::Private,
-            "shared" => FileVisibility::Shared,
-            _ => return Err(Error::Field(validation_message("Invalid visibility type"))),
-        })
-    }
-}
-
 impl TryFrom<String> for FileVisibility {
     type Error = Error;
     fn try_from(str: String) -> std::result::Result<Self, Self::Error> {
@@ -216,5 +207,9 @@ impl File {
         file.validate()?;
 
         Ok(file)
+    }
+
+    pub fn into_response(self) -> FileResponse {
+        self.into()
     }
 }
