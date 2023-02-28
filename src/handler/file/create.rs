@@ -15,7 +15,8 @@ pub async fn create_file_handler(
 
     let new_file = file_service
         .create_file(file_model, bytes)
-        .await?;
+        .await?
+        .into_response();
 
     Ok(Web::ok("Upload file successfully", new_file))
 }
