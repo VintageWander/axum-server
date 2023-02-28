@@ -23,8 +23,8 @@ impl FileService {
 
         let file_id = file.id.to_string();
         let full_filename = format!("{}.{}", file_id, &file.extension.to_string());
-        let (new_file, _, _) = try_join!(
-            self.file_repo.create_file(file),
+        let new_file = self.file_repo.create_file(file).await?;
+        try_join!(
             self.storage.put_object(full_filename, bytes),
             self.storage.put_folder(file_id)
         )?;
