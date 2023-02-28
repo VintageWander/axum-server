@@ -149,7 +149,7 @@ impl IntoResponse for Error {
             // General resource
             Error::ResourceNotFound => Web::not_found(
                 "Resource not found",
-                "Users, files, folders, or any resource with the provided information could not be found",
+                "Users, files, folders, or the version number provided could not be found",
             ),
 
             // User 
