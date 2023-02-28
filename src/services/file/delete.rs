@@ -18,8 +18,9 @@ impl FileService {
         // Create the file path
         let file_path = format!("{}.{}", file.id, file.extension.to_string());
 
-        let (_, deleted_file) = try_join!(
+        let (_, _, deleted_file) = try_join!(
             self.storage.delete_object(file_path),
+            self.storage.delete_folder(file.id.to_string()),
             self.file_repo.delete_file(file)
         )?;
         Ok(deleted_file)
