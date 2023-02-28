@@ -1,10 +1,6 @@
 use std::io::Cursor;
 
-use crate::{
-    db::aws::S3,
-    validation::file::{check_folder_name, check_fullpath},
-    Result,
-};
+use crate::{db::aws::S3, validation::file::check_fullpath, Result};
 use axum::body::StreamBody;
 use s3::Bucket;
 use tokio::fs::File;
@@ -24,8 +20,6 @@ impl Storage {
 
     // Use this function to get a list of bytes
     pub async fn get_object(&self, full_filename: impl AsRef<str>) -> Result<Vec<u8>> {
-        check_fullpath(full_filename.as_ref())?;
-
         let bytes = self
             .storage
             .get_object(full_filename)
@@ -69,7 +63,6 @@ impl Storage {
 
     // Upload file
     pub async fn put_object(&self, full_filename: impl AsRef<str>, bytes: Vec<u8>) -> Result<()> {
-        check_fullpath(full_filename.as_ref())?;
         self.storage
             .put_object_stream(&mut Cursor::new(bytes), full_filename)
             .await?;
@@ -79,9 +72,11 @@ impl Storage {
 
     // Create new folder
     pub async fn put_folder(&self, folder_name: impl AsRef<str>) -> Result<()> {
-        check_folder_name(folder_name.as_ref())?;
         self.storage
-            .put_object_stream(&mut Cursor::new(Vec::new()), folder_name)
+            .put_object_stream(
+                &mut Cursor::new(Vec::new()),
+                format!("{}/", folder_name.as_ref()),
+            )
             .await?;
 
         Ok(())
@@ -110,8 +105,14 @@ impl Storage {
 
     // Delete
     pub async fn delete_object(&self, full_filename: impl AsRef<str>) -> Result<()> {
-        check_fullpath(full_filename.as_ref())?;
         self.storage.delete_object(full_filename).await?;
+        Ok(())
+    }
+
+    pub async fn delete_folder(&self, folder_name: impl AsRef<str>) -> Result<()> {
+        self.storage
+            .delete_object(format!("{}/", folder_name.as_ref()))
+            .await?;
         Ok(())
     }
 }
