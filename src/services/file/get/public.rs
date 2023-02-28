@@ -1,3 +1,5 @@
+use mongodb::bson::oid::ObjectId;
+
 use crate::{
     model::{file::File, user::User},
     services::file::FileService,
@@ -20,6 +22,12 @@ impl FileService {
         check_dir(position)?;
         self.file_repo
             .get_public_files_by_position(position)
+            .await
+    }
+
+    pub async fn get_public_file_by_id(&self, file_id: ObjectId) -> Result<File> {
+        self.file_repo
+            .get_public_file_by_id(file_id)
             .await
     }
 }

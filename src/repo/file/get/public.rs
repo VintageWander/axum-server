@@ -1,4 +1,4 @@
-use mongodb::bson::doc;
+use mongodb::bson::{doc, oid::ObjectId};
 
 use crate::{
     model::{file::File, user::User},
@@ -20,6 +20,12 @@ impl FileRepo {
     pub async fn get_public_files_by_position(&self, position: &str) -> Result<Vec<File>> {
         self.file_dao
             .get_multiple(doc! {"visibility": "public", "position": position})
+            .await
+    }
+
+    pub async fn get_public_file_by_id(&self, file_id: ObjectId) -> Result<File> {
+        self.file_dao
+            .get_one(doc! {"_id": file_id ,"visibility": "public"})
             .await
     }
 }
