@@ -14,6 +14,7 @@ pub async fn get_folders_handler(
         // If the user is logged in,
 
         // fetch all user's folders (including private)
+        // filter out the root folder
         let users_folders = folder_service
             .get_folders_by_owner(&cookie_user)
             .await?
@@ -26,7 +27,7 @@ pub async fn get_folders_handler(
             .get_public_folders()
             .await?
             .into_iter()
-            .filter(|f| f.folder_name != cookie_user.username)
+            .filter(|f| f.folder_name != cookie_user.username && f.owner != cookie_user.id)
             .map(|f| f.into_response());
 
         // chain 2 iterators and collect them as a vec
