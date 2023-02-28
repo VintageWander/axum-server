@@ -3,14 +3,15 @@
 use std::net::SocketAddr;
 
 use axum::{response::Response, Server};
+use dao::storage::Storage;
 use dotenv::{dotenv, var};
 use error::Error;
 use services::user::UserService;
 
 use crate::{
-    db::mongo::Mongo,
+    db::{aws::S3, mongo::Mongo},
     routes::app_routes,
-    services::{file::FileService, folder::FolderService},
+    services::{file::FileService, file_version::FileVersionService, folder::FolderService},
 };
 
 mod dao;
@@ -36,6 +37,8 @@ pub struct SharedState {
     user_service: UserService,
     folder_service: FolderService,
     file_service: FileService,
+    file_version_service: FileVersionService,
+    storage: Storage,
 }
 
 #[tokio::main]
@@ -47,6 +50,8 @@ async fn main() -> Result<()> {
     let user_service = UserService::init(&db);
     let folder_service = FolderService::init(&db);
     let file_service = FileService::init(&db);
+    let file_version_service = FileVersionService::init(&db);
+    let storage = Storage::init(&S3::init());
 
     let port = var("PORT")
         .expect("Cannot read the PORT in the env")
@@ -59,14 +64,14 @@ async fn main() -> Result<()> {
         user_service,
         folder_service,
         file_service,
+        file_version_service,
+        storage,
     });
 
     Server::bind(&addr)
         .serve(router.into_make_service())
         .await
         .unwrap();
-
-    println!("Hello, world!");
 
     Ok(())
 }
