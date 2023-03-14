@@ -18,7 +18,7 @@ axum = { version = "0.6.4", features = [
 	"headers",
 	"multipart",
 ] }
-axum-extra = { version = "0.5.0", features = ["cookie"] }
+axum-extra = { version = "0.7.0", features = ["cookie"] }
 
 # Database
 mongodb = "2.3.1"
