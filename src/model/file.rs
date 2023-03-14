@@ -97,21 +97,16 @@ impl TryFrom<&str> for FileExtension {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename = "lowercase")]
 pub enum FileVisibility {
     #[serde(rename = "public")]
+    #[default]
     Public,
     #[serde(rename = "shared")]
     Shared,
     #[serde(rename = "private")]
     Private,
-}
-
-impl Default for FileVisibility {
-    fn default() -> Self {
-        FileVisibility::Public
-    }
 }
 
 impl From<FileVisibility> for &str {
