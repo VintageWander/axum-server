@@ -28,10 +28,7 @@ impl Web {
             .into_response()
     }
 
-    pub fn created<T: Serialize + DeserializeOwned>(
-        message: impl ToString,
-        data: impl Serialize + DeserializeOwned,
-    ) -> Response {
+    pub fn created(message: impl ToString, data: impl Serialize + DeserializeOwned) -> Response {
         (
             StatusCode::CREATED,
             Json(Web {
