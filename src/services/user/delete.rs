@@ -1,12 +1,8 @@
-use crate::{model::user::User, Result};
+use crate::{model::user::User, services::Service, Result};
 
-use super::UserService;
-
-impl UserService {
+impl Service {
     pub async fn delete_user(&self, user: User) -> Result<User> {
-        self.folder_service
-            .delete_root_folder(&user)
-            .await?;
+        self.folder_repo.delete_root_folder(&user).await?;
         self.user_repo.delete_user(user).await
     }
 }

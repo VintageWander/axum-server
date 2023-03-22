@@ -4,12 +4,13 @@ use crate::{
     error::Error,
     extractors::param::ParamID,
     request::user::{loggedin::LoggedInUser, update::UpdateUserRequest},
+    services::Service,
     web::Web,
-    SharedState, WebResult,
+    WebResult,
 };
 
 pub async fn update_user_handler(
-    State(SharedState { user_service, .. }): State<SharedState>,
+    State(service): State<Service>,
     ParamID(user_id): ParamID,
     LoggedInUser(cookie_user): LoggedInUser,
     user_req: UpdateUserRequest,
@@ -20,7 +21,7 @@ pub async fn update_user_handler(
 
     let user = user_req.into_user(cookie_user)?;
 
-    let user = user_service.update_user(user).await?;
+    let user = service.update_user(user).await?;
 
     Ok(Web::ok("Update user successfully", user.into_response()))
 }

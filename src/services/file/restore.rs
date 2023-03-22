@@ -1,18 +1,14 @@
-use crate::{model::file::File, Result};
+use crate::{model::file::File, services::Service, Result};
 
-use super::FileService;
-
-impl FileService {
+impl Service {
     pub async fn restore_file(&self, file: &File, version_number: i64) -> Result<()> {
         // First we need to back up the current file
 
-        self.file_version_service
-            .create_version(file)
-            .await?;
+        self.create_version(file).await?;
 
         // Get the FileVersion from the version_number provided
         let restore_version = self
-            .file_version_service
+            .file_version_repo
             .get_version_by_number(version_number)
             .await?;
 
@@ -30,8 +26,7 @@ impl FileService {
         self.storage
             .move_object(file_version_path, current_file_path)
             .await?;
-        self.file_version_service
-            .delete_version_by_id_file(version_number, file)
+        self.delete_version_by_id_file(version_number, file)
             .await?;
 
         Ok(())

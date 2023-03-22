@@ -1,10 +1,8 @@
 use tokio::try_join;
 
-use crate::{error::Error, model::file::File, Result};
+use crate::{error::Error, model::file::File, services::Service, Result};
 
-use super::FileService;
-
-impl FileService {
+impl Service {
     pub async fn update_file(&self, file: File, bytes: Vec<u8>) -> Result<File> {
         let old_file = self.file_repo.get_file_by_id(file.id).await?;
         if old_file.extension != file.extension {
@@ -33,9 +31,7 @@ impl FileService {
 
             // This function will move the current file to a new place
             // which is at <file_id>/<version_number>.<file_extension>
-            self.file_version_service
-                .create_version(&file)
-                .await?;
+            self.create_version(&file).await?;
             // This is to put the new file into the storage
             self.storage
                 .put_object(internal_file_path, bytes)

@@ -2,12 +2,11 @@ use chrono::Utc;
 
 use crate::{
     model::{file::File, file_version::FileVersion},
+    services::Service,
     Result,
 };
 
-use super::FileVersionService;
-
-impl FileVersionService {
+impl Service {
     pub async fn create_version(&self, file: &File) -> Result<FileVersion> {
         // Create a version number
         let version_number = Utc::now().timestamp_millis();

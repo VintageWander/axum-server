@@ -1,11 +1,11 @@
 use crate::{
     model::{folder::Folder, user::User},
-    services::folder::FolderService,
+    services::Service,
     validation::file::check_dir,
     Result,
 };
 
-impl FolderService {
+impl Service {
     pub async fn get_public_folders(&self) -> Result<Vec<Folder>> {
         self.folder_repo.get_public_folders().await
     }

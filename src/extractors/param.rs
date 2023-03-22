@@ -7,17 +7,17 @@ use axum::{
 };
 use mongodb::bson::oid::ObjectId;
 
-use crate::{error::Error, SharedState};
+use crate::{error::Error, services::Service};
 
 pub struct ParamID(pub ObjectId);
 
 #[async_trait]
-impl FromRequestParts<SharedState> for ParamID {
+impl FromRequestParts<Service> for ParamID {
     type Rejection = Error;
 
     async fn from_request_parts(
         parts: &mut Parts,
-        state: &SharedState,
+        state: &Service,
     ) -> Result<Self, Self::Rejection> {
         let Path(id) = Path::<String>::from_request_parts(parts, state).await?;
 

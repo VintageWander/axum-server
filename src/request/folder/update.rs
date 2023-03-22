@@ -6,8 +6,9 @@ use validator::Validate;
 use crate::{
     error::Error,
     model::{folder::Folder, user::User},
+    services::Service,
     validation::file::*,
-    Result, SharedState,
+    Result,
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize, Validate)]
@@ -24,11 +25,11 @@ pub struct UpdateFolderRequest {
 }
 
 #[async_trait]
-impl FromRequest<SharedState, Body> for UpdateFolderRequest {
+impl FromRequest<Service, Body> for UpdateFolderRequest {
     type Rejection = Error;
     async fn from_request(
         req: Request<Body>,
-        state: &SharedState,
+        state: &Service,
     ) -> std::result::Result<Self, Self::Rejection> {
         let Json(folder_req) = Json::<UpdateFolderRequest>::from_request(req, state).await?;
 

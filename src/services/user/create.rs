@@ -1,10 +1,8 @@
 use tokio::try_join;
 
-use crate::{error::Error, model::user::User, Result};
+use crate::{error::Error, model::user::User, services::Service, Result};
 
-use super::UserService;
-
-impl UserService {
+impl Service {
     pub async fn create_user(&self, user: User) -> Result<User> {
         let (is_email_exists, is_username_exists) = try_join!(
             self.user_repo.exists_user_by_email(&user.email),
@@ -18,7 +16,7 @@ impl UserService {
         let new_user = self.user_repo.create_user(user).await?;
 
         // Create a root folder
-        self.folder_service
+        self.folder_repo
             .create_root_folder(&new_user)
             .await?;
 

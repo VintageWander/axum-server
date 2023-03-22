@@ -1,9 +1,9 @@
 use axum::extract::State;
 
-use crate::{request::user::loggedin::LoggedInUser, web::Web, SharedState, WebResult};
+use crate::{request::user::loggedin::LoggedInUser, services::Service, web::Web, WebResult};
 
 pub async fn profile_user_handler(
-    State(SharedState { user_service, .. }): State<SharedState>,
+    State(service): State<Service>,
     LoggedInUser(cookie_user): LoggedInUser,
 ) -> WebResult {
     Ok(Web::ok(

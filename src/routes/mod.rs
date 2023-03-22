@@ -1,6 +1,6 @@
 use axum::Router;
 
-use crate::SharedState;
+use crate::services::Service;
 
 use self::{auth::auth_routes, file::file_routes, folder::folders_route, user::user_routes};
 
@@ -9,7 +9,7 @@ pub mod file;
 pub mod folder;
 pub mod user;
 
-pub fn app_routes() -> Router<SharedState> {
+pub fn app_routes() -> Router<Service> {
     Router::new()
         .merge(auth_routes())
         .merge(user_routes())

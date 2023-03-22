@@ -1,8 +1,6 @@
-use crate::{validation::user::check_username, Result};
+use crate::{services::Service, validation::user::check_username, Result};
 
-use super::UserService;
-
-impl UserService {
+impl Service {
     pub async fn exists_user_by_username(&self, username: &str) -> Result<bool> {
         check_username(username)?;
         self.user_repo

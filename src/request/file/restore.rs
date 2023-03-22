@@ -1,7 +1,7 @@
 use axum::{async_trait, body::Body, extract::FromRequest, http::Request, Json};
 use serde::{Deserialize, Serialize};
 
-use crate::{error::Error, SharedState};
+use crate::{error::Error, services::Service};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FileRestoreRequest {
@@ -10,12 +10,9 @@ pub struct FileRestoreRequest {
 }
 
 #[async_trait]
-impl FromRequest<SharedState, Body> for FileRestoreRequest {
+impl FromRequest<Service, Body> for FileRestoreRequest {
     type Rejection = Error;
-    async fn from_request(
-        req: Request<Body>,
-        state: &SharedState,
-    ) -> Result<Self, Self::Rejection> {
+    async fn from_request(req: Request<Body>, state: &Service) -> Result<Self, Self::Rejection> {
         let Json(restore_req) = Json::<FileRestoreRequest>::from_request(req, state).await?;
         Ok(restore_req)
     }

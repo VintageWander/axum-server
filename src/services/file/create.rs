@@ -1,10 +1,8 @@
 use tokio::try_join;
 
-use crate::{error::Error, model::file::File, Result};
+use crate::{error::Error, model::file::File, services::Service, Result};
 
-use super::FileService;
-
-impl FileService {
+impl Service {
     pub async fn create_file(&self, file: File, bytes: Vec<u8>) -> Result<File> {
         let (is_duplicate, parent_folder_exists) = try_join!(
             self.file_repo

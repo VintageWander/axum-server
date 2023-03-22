@@ -8,7 +8,7 @@ use axum::{
 use mongodb::bson::{doc, oid::ObjectId, Document};
 use serde::{Deserialize, Serialize};
 
-use crate::{error::Error, SharedState};
+use crate::{error::Error, services::Service};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UserQuery {
@@ -22,12 +22,12 @@ pub struct UserQuery {
 pub struct UserQueryDocument(pub Document);
 
 #[async_trait]
-impl FromRequestParts<SharedState> for UserQueryDocument {
+impl FromRequestParts<Service> for UserQueryDocument {
     type Rejection = Error;
 
     async fn from_request_parts(
         parts: &mut Parts,
-        state: &SharedState,
+        state: &Service,
     ) -> Result<Self, Self::Rejection> {
         let Query(query) = Query::<UserQuery>::from_request_parts(parts, state).await?;
 

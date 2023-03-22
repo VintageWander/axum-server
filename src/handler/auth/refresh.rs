@@ -6,14 +6,12 @@ use crate::{
     helper::auth::{
         cookie::make_refresh_cookie, decode::decode_refresh_token, encode::make_refresh_token,
     },
+    services::Service,
     web::Web,
-    SharedState, WebResult,
+    WebResult,
 };
 
-pub async fn refresh_handler(
-    State(SharedState { user_service, .. }): State<SharedState>,
-    cookies: CookieJar,
-) -> WebResult {
+pub async fn refresh_handler(State(service): State<Service>, cookies: CookieJar) -> WebResult {
     let refresh_token = cookies
         .get("refreshToken")
         .ok_or(Error::Unauthorized)?
@@ -22,7 +20,7 @@ pub async fn refresh_handler(
 
     let user_id = decode_refresh_token(refresh_token.clone())?;
 
-    let user = user_service.get_user_by_id(user_id).await?;
+    let user = service.get_user_by_id(user_id).await?;
 
     if user.refresh_token != refresh_token {
         return Err(Error::Unauthorized);

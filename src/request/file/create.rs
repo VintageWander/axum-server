@@ -17,8 +17,9 @@ use crate::{
         file::{File, FileVisibility},
         user::User,
     },
+    services::Service,
     validation::file::*,
-    Result, SharedState,
+    Result,
 };
 
 #[derive(Debug, Default, Serialize, Deserialize, Validate)]
@@ -35,11 +36,11 @@ pub struct CreateFileRequest {
 }
 
 #[async_trait]
-impl FromRequest<SharedState, Body> for CreateFileRequest {
+impl FromRequest<Service, Body> for CreateFileRequest {
     type Rejection = Error;
     async fn from_request(
         req: Request<Body>,
-        state: &SharedState,
+        state: &Service,
     ) -> std::result::Result<Self, Self::Rejection> {
         let mut multipart = Multipart::from_request(req, state).await?;
 

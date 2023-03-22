@@ -11,7 +11,7 @@ use serde::Deserialize;
 use tokio_util::io::ReaderStream;
 
 use crate::{
-    extractors::param::ParamID, request::user::loggedin::LoggedInUser, SharedState, WebResult,
+    extractors::param::ParamID, request::user::loggedin::LoggedInUser, services::Service, WebResult,
 };
 
 #[derive(Debug, Deserialize)]
@@ -20,11 +20,7 @@ pub struct VersionQuery {
 }
 
 pub async fn file_content_handler(
-    State(SharedState {
-        storage,
-        file_service,
-        ..
-    }): State<SharedState>,
+    State(service): State<Service>,
     ParamID(file_id): ParamID,
     Query(VersionQuery {
         version: version_number_option,
@@ -35,15 +31,13 @@ pub async fn file_content_handler(
     let file = if let Some(LoggedInUser(user)) = user_or_guest {
         // If the user is logged in,
         // Get their file
-        file_service
+        service
             .get_file_by_id_owner(file_id, &user)
             .await?
     } else {
         // Else,
         // Get the public file by id
-        file_service
-            .get_public_file_by_id(file_id)
-            .await?
+        service.get_public_file_by_id(file_id).await?
     };
 
     // Make the file path
@@ -59,7 +53,7 @@ pub async fn file_content_handler(
     };
 
     // Get the file from storage and write straight to the body without proxy storage
-    let bytes = storage.get_object(file_path).await?;
+    let bytes = service.storage.get_object(file_path).await?;
 
     let cursor = Cursor::new(bytes);
 

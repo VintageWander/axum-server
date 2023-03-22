@@ -10,12 +10,13 @@ use crate::{
         encode::{make_access_token, make_refresh_token},
     },
     request::user::{delete::DeleteUserRequest, loggedin::LoggedInUser},
+    services::Service,
     web::Web,
-    SharedState, WebResult,
+    WebResult,
 };
 
 pub async fn delete_user_handler(
-    State(SharedState { user_service, .. }): State<SharedState>,
+    State(service): State<Service>,
     cookies: CookieJar,
     ParamID(user_id): ParamID,
     LoggedInUser(cookie_user): LoggedInUser,
@@ -44,7 +45,7 @@ pub async fn delete_user_handler(
     );
 
     // Delete the user
-    spawn(async move { user_service.delete_user(cookie_user).await });
+    spawn(async move { service.delete_user(cookie_user).await });
 
     // Remove the cookies, to indicate a logout
     Ok((

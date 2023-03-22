@@ -1,10 +1,11 @@
-use mongodb::bson::{oid::ObjectId, Document};
+use mongodb::bson::oid::ObjectId;
+use mongodb::bson::Document;
 
-use crate::{model::user::User, Result};
+use crate::model::user::User;
+use crate::services::Service;
+use crate::Result;
 
-use super::UserService;
-
-impl UserService {
+impl Service {
     pub async fn get_users(&self) -> Result<Vec<User>> {
         self.user_repo.get_users().await
     }

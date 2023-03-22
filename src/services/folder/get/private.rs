@@ -2,12 +2,12 @@ use mongodb::bson::{oid::ObjectId, Document};
 
 use crate::{
     model::{folder::Folder, user::User},
-    services::folder::FolderService,
+    services::Service,
     validation::file::check_dir,
     Result,
 };
 
-impl FolderService {
+impl Service {
     pub async fn get_folders_by(&self, doc: Document) -> Result<Vec<Folder>> {
         self.folder_repo.get_folders_by(doc).await
     }

@@ -1,8 +1,6 @@
-use crate::Result;
+use crate::{services::Service, Result};
 
-use super::FileService;
-
-impl FileService {
+impl Service {
     pub async fn change_inner_files_position(
         &self,
         search: &str,

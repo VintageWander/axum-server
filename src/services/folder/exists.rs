@@ -1,10 +1,8 @@
 use mongodb::bson::oid::ObjectId;
 
-use super::FolderService;
-use crate::validation::file::check_dir;
-use crate::Result;
+use crate::{services::Service, validation::file::check_dir, Result};
 
-impl FolderService {
+impl Service {
     pub async fn exists_folder_by_id(&self, folder_id: ObjectId) -> Result<bool> {
         self.folder_repo
             .exists_folder_by_id(folder_id)

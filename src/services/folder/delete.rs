@@ -2,12 +2,11 @@ use futures_util::future::try_join_all;
 
 use crate::{
     model::{folder::Folder, user::User},
+    services::Service,
     Result,
 };
 
-use super::FolderService;
-
-impl FolderService {
+impl Service {
     pub async fn delete_folder(&self, folder: Folder) -> Result<()> {
         // Delete the main folder
         let deleted_folder = self.folder_repo.delete_folder(folder).await?;
@@ -24,7 +23,7 @@ impl FolderService {
 
         // Interate through them
         for folder in child_folders {
-            tasks.push(self.file_service.delete_files_by_folder(folder))
+            tasks.push(self.delete_files_by_folder(folder))
         }
 
         try_join_all(tasks).await?;

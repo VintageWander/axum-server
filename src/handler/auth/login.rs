@@ -8,16 +8,17 @@ use crate::{
     },
     model::user::User,
     request::user::login::LoginUserRequest,
+    services::Service,
     web::Web,
-    SharedState, WebResult,
+    WebResult,
 };
 
 pub async fn login_handler(
-    State(SharedState { user_service, .. }): State<SharedState>,
+    State(service): State<Service>,
     cookies: CookieJar,
     user_req: LoginUserRequest,
 ) -> WebResult {
-    let user = user_service
+    let user = service
         .get_user_by_login_info(&user_req.username, &user_req.password)
         .await?;
 
@@ -33,7 +34,7 @@ pub async fn login_handler(
         ..user
     };
 
-    let update_user = user_service.update_user(user).await?;
+    let update_user = service.update_user(user).await?;
 
     Ok((
         StatusCode::OK,

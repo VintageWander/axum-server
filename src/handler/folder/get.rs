@@ -1,12 +1,12 @@
 use axum::extract::{Query, State};
 
 use crate::{
-    extractors::folder_query::FolderQuery, request::user::loggedin::LoggedInUser, web::Web,
-    SharedState, WebResult,
+    extractors::folder_query::FolderQuery, request::user::loggedin::LoggedInUser,
+    services::Service, web::Web, WebResult,
 };
 
 pub async fn get_folders_handler(
-    State(SharedState { folder_service, .. }): State<SharedState>,
+    State(service): State<Service>,
     user_or_guest: Option<LoggedInUser>,
     Query(folder_query): Query<FolderQuery>,
 ) -> WebResult {
@@ -15,7 +15,7 @@ pub async fn get_folders_handler(
 
         // fetch all user's folders (including private)
         // filter out the root folder
-        let users_folders = folder_service
+        let users_folders = service
             .get_folders_by_owner(&cookie_user)
             .await?
             .into_iter()
@@ -23,7 +23,7 @@ pub async fn get_folders_handler(
             .map(|f| f.into_response());
 
         // fetch all public folders from everyone else (NOT including the user)
-        let public_folders = folder_service
+        let public_folders = service
             .get_public_folders()
             .await?
             .into_iter()
@@ -37,7 +37,7 @@ pub async fn get_folders_handler(
         // If the user is not logged in
 
         // Just get the list of public folders
-        folder_service
+        service
             .get_public_folders()
             .await?
             .into_iter()

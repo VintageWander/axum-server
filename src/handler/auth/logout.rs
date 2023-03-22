@@ -8,12 +8,13 @@ use crate::{
     },
     model::user::User,
     request::user::loggedin::LoggedInUser,
+    services::Service,
     web::Web,
-    SharedState, WebResult,
+    WebResult,
 };
 
 pub async fn logout_handler(
-    State(SharedState { user_service, .. }): State<SharedState>,
+    State(service): State<Service>,
     cookies: CookieJar,
     LoggedInUser(cookie_user): LoggedInUser,
 ) -> WebResult {
@@ -35,7 +36,7 @@ pub async fn logout_handler(
         ..cookie_user
     };
 
-    user_service.update_user(user).await?;
+    service.update_user(user).await?;
 
     Ok((
         StatusCode::OK,

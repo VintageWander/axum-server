@@ -5,10 +5,10 @@ use axum::{
 
 use crate::{
     handler::auth::{login::login_handler, logout::logout_handler, refresh::refresh_handler},
-    SharedState,
+    services::Service,
 };
 
-pub fn auth_routes() -> Router<SharedState> {
+pub fn auth_routes() -> Router<Service> {
     Router::new().nest(
         "/auth",
         Router::new()
@@ -18,14 +18,14 @@ pub fn auth_routes() -> Router<SharedState> {
     )
 }
 
-pub fn login_route() -> Router<SharedState> {
+pub fn login_route() -> Router<Service> {
     Router::new().route("/login", post(login_handler))
 }
 
-pub fn refresh_route() -> Router<SharedState> {
+pub fn refresh_route() -> Router<Service> {
     Router::new().route("/refresh", post(refresh_handler))
 }
 
-pub fn logout_route() -> Router<SharedState> {
+pub fn logout_route() -> Router<Service> {
     Router::new().route("/logout", delete(logout_handler))
 }

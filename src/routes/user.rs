@@ -8,10 +8,10 @@ use crate::{
         create::create_user_handler, delete::delete_user_handler, get::get_users_handler,
         profile::profile_user_handler, update::update_user_handler,
     },
-    SharedState,
+    services::Service,
 };
 
-pub fn user_routes() -> Router<SharedState> {
+pub fn user_routes() -> Router<Service> {
     Router::new().nest(
         "/users",
         Router::new()
@@ -23,22 +23,22 @@ pub fn user_routes() -> Router<SharedState> {
     )
 }
 
-pub fn get_users_route() -> Router<SharedState> {
+pub fn get_users_route() -> Router<Service> {
     Router::new().route("/", get(get_users_handler))
 }
 
-pub fn create_users_route() -> Router<SharedState> {
+pub fn create_users_route() -> Router<Service> {
     Router::new().route("/", post(create_user_handler))
 }
 
-pub fn profile_user_route() -> Router<SharedState> {
+pub fn profile_user_route() -> Router<Service> {
     Router::new().route("/profile", get(profile_user_handler))
 }
 
-pub fn update_user_route() -> Router<SharedState> {
+pub fn update_user_route() -> Router<Service> {
     Router::new().route("/:user_id", put(update_user_handler))
 }
 
-pub fn delete_user_route() -> Router<SharedState> {
+pub fn delete_user_route() -> Router<Service> {
     Router::new().route("/:user_id", delete(delete_user_handler))
 }

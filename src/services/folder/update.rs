@@ -1,9 +1,8 @@
 use tokio::try_join;
 
-use super::FolderService;
-use crate::{error::Error, model::folder::Folder, Result};
+use crate::{error::Error, model::folder::Folder, services::Service, Result};
 
-impl FolderService {
+impl Service {
     pub async fn update_folder(&self, folder: Folder) -> Result<Folder> {
         let old_folder = self
             .folder_repo
@@ -36,7 +35,7 @@ impl FolderService {
                     &old_folder.fullpath,
                     &folder.fullpath
                 ),
-                self.file_service.change_inner_files_position(
+                self.file_repo.change_inner_files_position(
                     &old_folder.fullpath,
                     &old_folder.fullpath,
                     &folder.fullpath

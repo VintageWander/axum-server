@@ -2,12 +2,11 @@ use futures_util::future::try_join_all;
 
 use crate::{
     model::{file::File, file_version::FileVersion},
+    services::Service,
     Result,
 };
 
-use super::FileVersionService;
-
-impl FileVersionService {
+impl Service {
     pub async fn delete_version_by_id_file(
         &self,
         version_number: i64,

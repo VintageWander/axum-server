@@ -2,12 +2,12 @@ use mongodb::bson::oid::ObjectId;
 
 use crate::{
     model::{file::File, user::User},
-    services::file::FileService,
+    services::Service,
     validation::file::check_fullpath,
     Result,
 };
 
-impl FileService {
+impl Service {
     pub async fn get_files_by_owner(&self, owner: &User) -> Result<Vec<File>> {
         self.file_repo.get_files_by_owner(owner).await
     }

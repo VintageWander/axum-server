@@ -1,31 +1,24 @@
 use axum::extract::State;
 
 use crate::{
-    extractors::param::ParamID, request::user::loggedin::LoggedInUser, web::Web, SharedState,
+    extractors::param::ParamID, request::user::loggedin::LoggedInUser, services::Service, web::Web,
     WebResult,
 };
 
 pub async fn get_file_versions_handler(
-    State(SharedState {
-        file_service,
-        storage,
-        file_version_service,
-        ..
-    }): State<SharedState>,
+    State(service): State<Service>,
     user_or_guest: Option<LoggedInUser>,
     ParamID(file_id): ParamID,
 ) -> WebResult {
     let file = if let Some(LoggedInUser(user)) = user_or_guest {
-        file_service
+        service
             .get_file_by_id_owner(file_id, &user)
             .await?
     } else {
-        file_service
-            .get_public_file_by_id(file_id)
-            .await?
+        service.get_public_file_by_id(file_id).await?
     };
 
-    let versions: Vec<_> = file_version_service
+    let versions: Vec<_> = service
         .get_file_versions(&file)
         .await?
         .into_iter()

@@ -1,5 +1,5 @@
 [package]
-name = "axum-server"
+name = "axum-file-server"
 version = "0.1.0"
 edition = "2021"
 
@@ -19,6 +19,7 @@ axum = { version = "0.6.4", features = [
 	"multipart",
 ] }
 axum-extra = { version = "0.7.0", features = ["cookie"] }
+axum-macros = "0.3.6"
 
 # Database
 mongodb = "2.3.1"

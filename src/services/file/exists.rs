@@ -1,8 +1,6 @@
-use crate::{validation::file::check_fullpath, Result};
+use crate::{services::Service, validation::file::check_fullpath, Result};
 
-use super::FileService;
-
-impl FileService {
+impl Service {
     pub async fn exists_file_by_fullpath(&self, fullpath: &str) -> Result<bool> {
         check_fullpath(fullpath)?;
         self.file_repo

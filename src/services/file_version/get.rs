@@ -1,11 +1,10 @@
 use crate::{
     model::{file::File, file_version::FileVersion},
+    services::Service,
     Result,
 };
 
-use super::FileVersionService;
-
-impl FileVersionService {
+impl Service {
     pub async fn get_file_versions(&self, file: &File) -> Result<Vec<FileVersion>> {
         self.file_version_repo
             .get_file_versions(file)

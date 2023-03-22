@@ -1,13 +1,13 @@
 use tokio::try_join;
 
-use super::FolderService;
 use crate::{
     error::Error,
     model::{folder::Folder, user::User},
+    services::Service,
     Result,
 };
 
-impl FolderService {
+impl Service {
     pub async fn create_folder(&self, folder: Folder) -> Result<Folder> {
         /*
             First we need to check for conflicts by using the exists_folder_by_fullpath

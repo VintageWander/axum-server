@@ -1,25 +1,25 @@
 use axum::extract::{Query, State};
 
 use crate::{
-    extractors::file_query::FileQuery, request::user::loggedin::LoggedInUser, web::Web,
-    SharedState, WebResult,
+    extractors::file_query::FileQuery, request::user::loggedin::LoggedInUser, services::Service,
+    web::Web, WebResult,
 };
 
 pub async fn get_files_handler(
-    State(SharedState { file_service, .. }): State<SharedState>,
+    State(service): State<Service>,
     user_or_guest: Option<LoggedInUser>,
     Query(file_query): Query<FileQuery>,
 ) -> WebResult {
     let mut all_files: Vec<_> = if let Some(LoggedInUser(user)) = user_or_guest {
         // If the user is logged in
         // Get all user's files
-        let users_files = file_service
+        let users_files = service
             .get_files_by_owner(&user)
             .await?
             .into_iter();
 
         // Get all public files
-        let public_files = file_service
+        let public_files = service
             .get_public_files()
             .await?
             .into_iter()
@@ -33,7 +33,7 @@ pub async fn get_files_handler(
         // Else, for the guest,
         // Get all public files are there
 
-        file_service
+        service
             .get_public_files()
             .await?
             .into_iter()

@@ -3,15 +3,14 @@ use tokio::try_join;
 
 use crate::{
     model::{file::File, folder::Folder},
+    services::Service,
     Result,
 };
 
-use super::FileService;
-
-impl FileService {
+impl Service {
     pub async fn delete_file(&self, file: File) -> Result<File> {
         // This function will delete all version files
-        self.file_version_service
+        self.file_version_repo
             .delete_versions_by_file(&file)
             .await?;
 

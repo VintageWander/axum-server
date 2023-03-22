@@ -5,8 +5,9 @@ use validator::Validate;
 use crate::{
     error::Error,
     model::user::User,
+    services::Service,
     validation::user::{check_password, check_username},
-    Result, SharedState,
+    Result,
 };
 
 #[derive(Debug, Serialize, Deserialize, Validate)]
@@ -29,11 +30,11 @@ pub struct UpdateUserRequest {
 }
 
 #[async_trait]
-impl FromRequest<SharedState, Body> for UpdateUserRequest {
+impl FromRequest<Service, Body> for UpdateUserRequest {
     type Rejection = Error;
     async fn from_request(
         req: Request<Body>,
-        state: &SharedState,
+        state: &Service,
     ) -> std::result::Result<Self, Self::Rejection> {
         let Json(user_req) = Json::<UpdateUserRequest>::from_request(req, state).await?;
         user_req.validate()?;

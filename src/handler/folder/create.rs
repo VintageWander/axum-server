@@ -2,18 +2,19 @@ use axum::extract::State;
 
 use crate::{
     request::{folder::create::CreateFolderRequest, user::loggedin::LoggedInUser},
+    services::Service,
     web::Web,
-    SharedState, WebResult,
+    WebResult,
 };
 
 pub async fn create_folder_handler(
-    State(SharedState { folder_service, .. }): State<SharedState>,
+    State(service): State<Service>,
     LoggedInUser(cookie_user): LoggedInUser,
     folder_req: CreateFolderRequest,
 ) -> WebResult {
     let folder = folder_req.into_folder_with_owner(&cookie_user)?;
 
-    let new_folder = folder_service
+    let new_folder = service
         .create_folder(folder)
         .await?
         .into_response();
