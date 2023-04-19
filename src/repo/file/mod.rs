@@ -5,17 +5,17 @@ pub mod get;
 pub mod replace;
 pub mod update;
 
-use crate::{dao::mongo::Dao, db::mongo::Mongo, model::file::File};
+use crate::{db::mongo::Mongo, model::file::*};
 
 #[derive(Debug, Clone)]
 pub struct FileRepo {
-    file_dao: Dao<File>,
+    file_dao: FileDao,
 }
 
 impl FileRepo {
     pub fn init(db: &Mongo) -> Self {
         Self {
-            file_dao: Dao::init(db, "File"),
+            file_dao: FileDao::new(db.get_collection("File")),
         }
     }
 }

@@ -22,7 +22,7 @@ impl FileRepo {
         };
 
         self.file_dao
-            .update_multiple(
+            .update_many(
                 // Find all files that has the search string in its fullpath
                 // If we don't use regex, then the result will only match for one document
                 // Since the fullpath is unique

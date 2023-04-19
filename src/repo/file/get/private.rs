@@ -8,12 +8,12 @@ use crate::{
 
 impl FileRepo {
     pub async fn get_files_by(&self, doc: Document) -> Result<Vec<File>> {
-        self.file_dao.get_multiple(doc).await
+        self.file_dao.get_many(doc).await
     }
 
     pub async fn get_files_by_owner(&self, owner: &User) -> Result<Vec<File>> {
         self.file_dao
-            .get_multiple(doc! {"owner": owner.id})
+            .get_many(doc! {"owner": owner.id})
             .await
     }
 
@@ -35,7 +35,7 @@ impl FileRepo {
 
     pub async fn get_files_by_position(&self, position: &str) -> Result<Vec<File>> {
         self.file_dao
-            .get_multiple(doc! {"position": position})
+            .get_many(doc! {"position": position})
             .await
     }
 }

@@ -4,6 +4,6 @@ use super::FileVersionRepo;
 
 impl FileVersionRepo {
     pub async fn create_version(&self, fv: FileVersion) -> Result<FileVersion> {
-        self.file_version_dao.create_one(fv).await
+        self.file_version_dao.insert_one(fv).await
     }
 }

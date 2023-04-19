@@ -9,19 +9,19 @@ use mongodb::bson::doc;
 impl FolderRepo {
     pub async fn get_public_folders(&self) -> Result<Vec<Folder>> {
         self.folder_dao
-            .get_multiple(doc! {"visibility": "public"})
+            .get_many(doc! {"visibility": "public"})
             .await
     }
 
     pub async fn get_public_folders_by_owner(&self, owner: &User) -> Result<Vec<Folder>> {
         self.folder_dao
-            .get_multiple(doc! {"visibility": "public" ,"owner": owner.id})
+            .get_many(doc! {"visibility": "public" ,"owner": owner.id})
             .await
     }
 
     pub async fn get_public_folders_by_position(&self, position: &str) -> Result<Vec<Folder>> {
         self.folder_dao
-            .get_multiple(doc! {"visibility": "public", "position": position})
+            .get_many(doc! {"visibility": "public", "position": position})
             .await
     }
 

@@ -44,11 +44,10 @@ impl FromRequest<Service, Body> for UpdateUserRequest {
 
 impl UpdateUserRequest {
     pub fn into_user(self, old_user: User) -> Result<User> {
-        User::builder()
-            .id(old_user.id)
-            .username(self.username.unwrap_or(old_user.username))
-            .email(self.email.unwrap_or(old_user.email))
-            .password(self.new_password.unwrap_or(old_user.password))
+        User::id(old_user.id)
+            .username(&self.username.unwrap_or(old_user.username))
+            .email(&self.email.unwrap_or(old_user.email))
+            .password(&self.new_password.unwrap_or(old_user.password))
             .created_at(old_user.created_at)
             .build()
     }

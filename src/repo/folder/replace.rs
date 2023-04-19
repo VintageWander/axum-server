@@ -22,7 +22,7 @@ impl FolderRepo {
         };
 
         self.folder_dao
-            .update_multiple(
+            .update_many(
                 // Find all folders that has the search string in its fullpath
                 // If we don't use regex, then the result will only match for one document
                 // Since the fullpath is unique

@@ -9,7 +9,7 @@ use crate::{
 impl FolderRepo {
     pub async fn get_shared_folders_by_owner(&self, owner: &User) -> Result<Vec<Folder>> {
         self.folder_dao
-            .get_multiple(doc! {"visibility": "shared", "owner": owner.id})
+            .get_many(doc! {"visibility": "shared", "owner": owner.id})
             .await
     }
 }

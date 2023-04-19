@@ -4,6 +4,6 @@ use super::UserRepo;
 
 impl UserRepo {
     pub async fn create_user(&self, user: User) -> Result<User> {
-        self.user_dao.create_one(user).await
+        self.user_dao.insert_one(user).await
     }
 }

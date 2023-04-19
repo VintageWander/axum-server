@@ -1,4 +1,4 @@
-use crate::{dao::mongo::Dao, db::mongo::Mongo, model::folder::Folder};
+use crate::{db::mongo::Mongo, model::folder::*};
 
 pub mod create;
 pub mod delete;
@@ -9,13 +9,13 @@ pub mod update;
 
 #[derive(Debug, Clone)]
 pub struct FolderRepo {
-    folder_dao: Dao<Folder>,
+    folder_dao: FolderDao,
 }
 
 impl FolderRepo {
     pub fn init(db: &Mongo) -> Self {
         Self {
-            folder_dao: Dao::init(db, "Folder"),
+            folder_dao: FolderDao::new(db.get_collection("Folder")),
         }
     }
 }

@@ -9,7 +9,7 @@ use crate::{
 impl FileRepo {
     pub async fn get_shared_files_by_owner(&self, owner: &User) -> Result<Vec<File>> {
         self.file_dao
-            .get_multiple(doc! {"visibility": "shared", "owner": owner.id})
+            .get_many(doc! {"visibility": "shared", "owner": owner.id})
             .await
     }
 }

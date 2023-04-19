@@ -1,4 +1,4 @@
-use crate::{dao::mongo::Dao, db::mongo::Mongo, model::file_version::FileVersion};
+use crate::{db::mongo::Mongo, model::file_version::*};
 
 pub mod create;
 pub mod delete;
@@ -10,13 +10,13 @@ pub mod get;
 
 #[derive(Debug, Clone)]
 pub struct FileVersionRepo {
-    file_version_dao: Dao<FileVersion>,
+    file_version_dao: FileVersionDao,
 }
 
 impl FileVersionRepo {
     pub fn init(db: &Mongo) -> Self {
         Self {
-            file_version_dao: Dao::init(db, "FileVersion"),
+            file_version_dao: FileVersionDao::new(db.get_collection("FileVersion")),
         }
     }
 }

@@ -16,7 +16,7 @@ impl FileVersionRepo {
 
     pub async fn delete_versions_by_file(&self, file: &File) -> Result<()> {
         self.file_version_dao
-            .delete_multiple(doc! {"fileId": file.id})
+            .delete_many(doc! {"fileId": file.id})
             .await
     }
 }

@@ -11,7 +11,7 @@ impl FolderRepo {
     // This repository works as like an extension on top of the dao layer
     // Validation will be performed at that service layer
     pub async fn get_folders_by(&self, doc: Document) -> Result<Vec<Folder>> {
-        self.folder_dao.get_multiple(doc).await
+        self.folder_dao.get_many(doc).await
     }
 
     pub async fn get_folder_by_id(&self, folder_id: ObjectId) -> Result<Folder> {
@@ -32,7 +32,7 @@ impl FolderRepo {
 
     pub async fn get_folders_by_owner(&self, owner: &User) -> Result<Vec<Folder>> {
         self.folder_dao
-            .get_multiple(doc! {"owner": owner.id})
+            .get_many(doc! {"owner": owner.id})
             .await
     }
 
@@ -49,7 +49,7 @@ impl FolderRepo {
     // to create a folder tree
     pub async fn get_folders_by_position(&self, position: &str) -> Result<Vec<Folder>> {
         self.folder_dao
-            .get_multiple(doc! {"position": position})
+            .get_many(doc! {"position": position})
             .await
     }
 
@@ -68,7 +68,7 @@ impl FolderRepo {
             options: String::new(),
         };
         self.folder_dao
-            .get_multiple(doc! {"fullpath": {
+            .get_many(doc! {"fullpath": {
                     "$regex": fullpath_regex
                 }
             })

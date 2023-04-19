@@ -41,10 +41,9 @@ impl FromRequest<Service, Body> for CreateUserRequest {
 impl TryFrom<CreateUserRequest> for User {
     type Error = Error;
     fn try_from(user_req: CreateUserRequest) -> Result<Self, Self::Error> {
-        let user = User::builder()
-            .username(user_req.username)
-            .email(user_req.email)
-            .password(user_req.password)
+        let user = User::username(&user_req.username)
+            .email(&user_req.email)
+            .password(&user_req.password)
             .build()?;
         Ok(user)
     }

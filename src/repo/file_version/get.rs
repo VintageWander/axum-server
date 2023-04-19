@@ -10,7 +10,7 @@ use super::FileVersionRepo;
 impl FileVersionRepo {
     pub async fn get_file_versions(&self, file: &File) -> Result<Vec<FileVersion>> {
         self.file_version_dao
-            .get_multiple(doc! {"fileId": file.id})
+            .get_many(doc! {"fileId": file.id})
             .await
     }
 

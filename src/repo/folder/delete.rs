@@ -19,7 +19,7 @@ impl FolderRepo {
             options: String::new(),
         };
         self.folder_dao
-            .delete_multiple(doc! {"fullpath": {
+            .delete_many(doc! {"fullpath": {
                     "$regex": fullpath_regex
                 }
             })
