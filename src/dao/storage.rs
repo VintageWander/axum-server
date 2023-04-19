@@ -1,10 +1,9 @@
 use std::io::Cursor;
 
 use crate::{db::aws::S3, validation::file::check_fullpath, Result};
-use axum::body::StreamBody;
-use s3::Bucket;
+
+use s3::{request::ResponseDataStream, Bucket};
 use tokio::fs::File;
-use tokio_util::io::ReaderStream;
 
 #[derive(Debug, Clone)]
 pub struct Storage {
@@ -32,33 +31,32 @@ impl Storage {
 
     // Use this function in case you want to write directly to the response body
     // and return to the client
-    pub async fn write_to_body(
-        &self,
-        full_filename: impl AsRef<str>,
-    ) -> Result<StreamBody<ReaderStream<Cursor<Vec<u8>>>>> {
-        let mut writer = Cursor::new(Vec::new());
+    // pub async fn write_to_body(
+    //     &self,
+    //     full_filename: impl AsRef<str>,
+    // ) -> Result<StreamBody<ReaderStream<Cursor<Vec<u8>>>>> {
+    //     let mut writer = Cursor::new(Vec::new());
 
-        self.storage
-            .get_object_stream(full_filename, &mut writer)
-            .await?;
+    //     self.storage
+    //         .get_object_stream(full_filename, &mut writer)
+    //         .await?;
 
-        let stream = ReaderStream::new(writer);
-        let body = StreamBody::new(stream);
+    //     let stream = ReaderStream::new(writer);
+    //     let body = StreamBody::new(stream);
 
-        Ok(body)
-    }
+    //     Ok(body)
+    // }
 
     // Use this function in case you want to get the object and write it to a file
     pub async fn write_to_file(
         &self,
         full_filename: impl AsRef<str>,
         file: &mut File,
-    ) -> Result<()> {
+    ) -> Result<ResponseDataStream> {
         self.storage
-            .get_object_stream(full_filename, file)
-            .await?;
-
-        Ok(())
+            .get_object_stream(full_filename)
+            .await
+            .map_err(Into::into)
     }
 
     // Upload file
