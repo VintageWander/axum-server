@@ -21,9 +21,13 @@ axum = { version = "0.6.4", features = [
 axum-extra = { version = "0.7.0", features = ["cookie"] }
 axum-macros = "0.3.6"
 
+# Custom macros
+mongoose = { path = "mongoose" }
+backend-macros = { path = "backend-macros" }
+
 # Database
 mongodb = "2.3.1"
-rust-s3 = "0.32.3"
+rust-s3 = "0.33.0"
 
 # Credentials
 dotenv = "0.15.0"
