@@ -1,16 +1,15 @@
+use backend_macros::Dto;
 use chrono::Utc;
-use mongodb::bson::{doc, oid::ObjectId, Document};
+use mongodb::bson::{doc, oid::ObjectId};
+use mongoose::{IntoDoc, Model};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{
-    error::Error, helper::make_error::validation_message, response::file::FileResponse,
-    validation::file::*, Result,
-};
+use crate::{error::Error, helper::make_error::validation_message, validation::file::*, Result};
 
 use super::user::User;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Validate)]
+#[derive(Debug, Clone, Serialize, Deserialize, Validate, Model, Dto)]
 #[serde(rename_all = "camelCase")]
 pub struct File {
     #[serde(rename = "_id")]
@@ -38,9 +37,10 @@ pub struct File {
     pub updated_at: i64,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, IntoDoc)]
 #[serde(rename = "lowercase")]
 pub enum FileExtension {
+    #[default]
     #[serde(rename = "png")]
     Png,
     #[serde(rename = "jpg")]
@@ -51,19 +51,6 @@ pub enum FileExtension {
     Mp3,
     #[serde(rename = "txt")]
     Txt,
-}
-
-impl ToString for FileExtension {
-    fn to_string(&self) -> String {
-        match self {
-            FileExtension::Png => "png",
-            FileExtension::Jpg => "jpg",
-            FileExtension::Jpeg => "jpeg",
-            FileExtension::Mp3 => "mp3",
-            FileExtension::Txt => "txt",
-        }
-        .to_string()
-    }
 }
 
 impl From<FileExtension> for &str {
@@ -78,11 +65,6 @@ impl From<FileExtension> for &str {
     }
 }
 
-impl From<FileExtension> for String {
-    fn from(f: FileExtension) -> Self {
-        f.to_string()
-    }
-}
 impl TryFrom<&str> for FileExtension {
     type Error = Error;
     fn try_from(str: &str) -> std::result::Result<Self, Self::Error> {
@@ -97,11 +79,11 @@ impl TryFrom<&str> for FileExtension {
     }
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, IntoDoc)]
 #[serde(rename = "lowercase")]
 pub enum FileVisibility {
-    #[serde(rename = "public")]
     #[default]
+    #[serde(rename = "public")]
     Public,
     #[serde(rename = "shared")]
     Shared,
@@ -119,13 +101,6 @@ impl From<FileVisibility> for &str {
     }
 }
 
-impl From<FileVisibility> for String {
-    fn from(f: FileVisibility) -> Self {
-        let str: &str = f.into();
-        str.to_string()
-    }
-}
-
 impl TryFrom<String> for FileVisibility {
     type Error = Error;
     fn try_from(str: String) -> std::result::Result<Self, Self::Error> {
@@ -135,25 +110,6 @@ impl TryFrom<String> for FileVisibility {
             "shared" => FileVisibility::Shared,
             _ => return Err(Error::Field(validation_message("Invalid visibility type"))),
         })
-    }
-}
-
-impl From<File> for Document {
-    fn from(f: File) -> Self {
-        let extension: &str = f.extension.into();
-        let visibility: &str = f.visibility.into();
-
-        doc! {
-            "owner": f.owner,
-            "filename": f.filename,
-            "extension": extension,
-            "fullFilename": f.full_filename,
-            "visibility": visibility,
-            "position": f.position,
-            "fullpath": f.fullpath,
-            "createdAt": f.created_at,
-            "updatedAt": f.updated_at,
-        }
     }
 }
 
@@ -204,7 +160,7 @@ impl File {
         Ok(file)
     }
 
-    pub fn into_response(self) -> FileResponse {
-        self.into()
+    pub fn into_response(self) -> FileDTO {
+        self.into_dto()
     }
 }

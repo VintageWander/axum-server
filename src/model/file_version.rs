@@ -1,24 +1,18 @@
-use mongodb::bson::{doc, oid::ObjectId, Document};
+use backend_macros::Dto;
+use mongodb::bson::{doc, oid::ObjectId};
+use mongoose::Model;
 use serde::{Deserialize, Serialize};
+use validator::Validate;
 
 use super::file::File;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Validate, Model, Dto)]
 #[serde(rename_all = "camelCase")]
 pub struct FileVersion {
     #[serde(rename = "_id")]
     pub id: ObjectId,
     pub file_id: ObjectId,
     pub version_number: i64,
-}
-
-impl From<FileVersion> for Document {
-    fn from(fv: FileVersion) -> Self {
-        doc! {
-            "fileId": fv.file_id,
-            "versionNumber": fv.version_number
-        }
-    }
 }
 
 impl FileVersion {
