@@ -70,7 +70,7 @@ pub enum Error {
     */
     
     #[error("Resource not found")]
-    ResourceNotFound,
+    NotFound,
 
     /*
         User
@@ -147,7 +147,7 @@ impl IntoResponse for Error {
             // Custom error
             
             // General resource
-            Error::ResourceNotFound => Web::not_found(
+            Error::NotFound => Web::not_found(
                 "Resource not found",
                 "Users, files, folders, or the version number provided could not be found",
             ),
