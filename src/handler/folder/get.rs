@@ -62,7 +62,7 @@ pub async fn get_folders_handler(
             bool = bool && &f.position == position
         }
         if let Some(visibility) = &folder_query.visibility {
-            bool = bool && &f.visibility == visibility
+            bool = bool && &f.visibility.to_string() == visibility
         }
         if let Some(fullpath) = &folder_query.fullpath {
             bool = bool && &f.fullpath == fullpath
