@@ -25,10 +25,8 @@ impl Service {
         */
 
         let (is_folder_conflict, exists_parent_folder) = try_join!(
-            self.folder_repo
-                .exists_folder_by_fullpath(&folder.fullpath), // Check for conflicts
-            self.folder_repo
-                .exists_folder_by_fullpath(&folder.position) // Check for parent folder existence
+            self.exists_folder_by_fullpath(&folder.fullpath), // Check for conflicts
+            self.exists_folder_by_fullpath(&folder.position), // Check for parent folder existence
         )?;
 
         /*
@@ -44,11 +42,14 @@ impl Service {
             return Err(Error::ParentFolderNotFound);
         }
 
-        let new_folder = self.folder_repo.create_folder(folder).await?;
+        let new_folder = self.folder_dao.insert_one(folder).await?;
         Ok(new_folder)
     }
 
     pub async fn create_root_folder(&self, owner: &User) -> Result<()> {
-        self.folder_repo.create_root_folder(owner).await
+        self.folder_dao
+            .insert_one(Folder::new_root(owner)?)
+            .await?;
+        Ok(())
     }
 }

@@ -20,21 +20,19 @@ impl Service {
             file.extension.to_string()
         );
 
+        // Delete the file in S3
         self.storage
             .delete_object(file_version_path)
             .await?;
 
-        self.file_version_repo
-            .delete_version(version_number)
+        self.file_version_dao
+            .delete_one(FileVersion::version_number(version_number))
             .await
     }
 
     pub async fn delete_versions_by_file(&self, file: &File) -> Result<()> {
         // Get all versions of a file
-        let file_versions = self
-            .file_version_repo
-            .get_file_versions(file)
-            .await?;
+        let file_versions = self.get_file_versions(file).await?;
 
         // Create a tasks vector
         let mut tasks = vec![];

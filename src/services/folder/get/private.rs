@@ -1,4 +1,4 @@
-use mongodb::bson::{oid::ObjectId, Document};
+use mongodb::bson::{doc, oid::ObjectId, Document, Regex};
 
 use crate::{
     model::{folder::Folder, user::User},
@@ -9,15 +9,19 @@ use crate::{
 
 impl Service {
     pub async fn get_folders_by(&self, doc: Document) -> Result<Vec<Folder>> {
-        self.folder_repo.get_folders_by(doc).await
+        self.folder_dao.get_many(doc).await
     }
 
     pub async fn get_folders_by_owner(&self, owner: &User) -> Result<Vec<Folder>> {
-        self.folder_repo.get_folders_by_owner(owner).await
+        self.folder_dao
+            .get_many(Folder::owner(owner.id))
+            .await
     }
 
     pub async fn get_folder_by_id(&self, folder_id: ObjectId) -> Result<Folder> {
-        self.folder_repo.get_folder_by_id(folder_id).await
+        self.folder_dao
+            .get_one(Folder::id(folder_id))
+            .await
     }
 
     pub async fn get_folder_by_id_owner(
@@ -25,8 +29,8 @@ impl Service {
         folder_id: ObjectId,
         owner: &User,
     ) -> Result<Folder> {
-        self.folder_repo
-            .get_folder_by_id_owner(folder_id, owner)
+        self.folder_dao
+            .get_one(Folder::id(folder_id).owner(owner.id))
             .await
     }
 
@@ -34,22 +38,42 @@ impl Service {
     // to create a folder tree
     pub async fn get_folders_by_position(&self, position: &str) -> Result<Vec<Folder>> {
         check_dir(position)?;
-        self.folder_repo
-            .get_folders_by_position(position)
+
+        self.folder_dao
+            .get_many(Folder::position(position))
             .await
     }
 
     pub async fn get_folder_by_fullpath(&self, fullpath: &str) -> Result<Folder> {
         check_dir(fullpath)?;
-        self.folder_repo
-            .get_folder_by_fullpath(fullpath)
+
+        self.folder_dao
+            .get_one(Folder::fullpath(fullpath))
             .await
     }
 
     pub async fn get_folders_by_prefix_fullpath(&self, fullpath: &str) -> Result<Vec<Folder>> {
         check_dir(fullpath)?;
-        self.folder_repo
-            .get_folders_by_prefix_fullpath(fullpath)
+
+        let fullpath_regex = Regex {
+            pattern: format!("^{fullpath}"),
+            options: String::new(),
+        };
+
+        self.folder_dao
+            .get_many(doc! {"fullpath": {
+                    "$regex": fullpath_regex
+                }
+            })
+            .await
+    }
+
+    pub async fn get_root_folder(&self, owner: &User) -> Result<Folder> {
+        self.folder_dao
+            .get_one(doc! {
+                "folderName": format!("{}/", owner.username),
+                "fullpath": format!("{}/", owner.username)
+            })
             .await
     }
 }

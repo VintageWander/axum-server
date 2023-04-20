@@ -4,17 +4,15 @@ use crate::{error::Error, model::file::File, services::Service, Result};
 
 impl Service {
     pub async fn update_file(&self, file: File, bytes: Vec<u8>) -> Result<File> {
-        let old_file = self.file_repo.get_file_by_id(file.id).await?;
+        let old_file = self.get_file_by_id(file.id).await?;
         if old_file.extension != file.extension {
             return Err(Error::ExtensionDiff);
         }
 
         if old_file.fullpath != file.fullpath {
             let (is_duplicate, parent_folder_exists) = try_join!(
-                self.file_repo
-                    .exists_file_by_fullpath(&file.fullpath), // check for a file with the same name at the exact location
-                self.folder_repo
-                    .exists_folder_by_fullpath(&file.position) // check in the folder service if there is a folder exists at file's location
+                self.exists_file_by_fullpath(&file.fullpath), // check for a file with the same name at the exact location
+                self.exists_file_by_fullpath(&file.position) // check in the folder service if there is a folder exists at file's location
             )?;
 
             if is_duplicate {
@@ -39,6 +37,6 @@ impl Service {
         }
 
         // Update the file model
-        self.file_repo.update_file(file).await
+        self.file_dao.update_one(file).await
     }
 }

@@ -29,8 +29,8 @@ impl Service {
             .move_object(current_file_path, file_version_path)
             .await?;
 
-        self.file_version_repo
-            .create_version(FileVersion::new(file, version_number))
+        self.file_version_dao
+            .insert_one(FileVersion::new(file, version_number))
             .await
     }
 }

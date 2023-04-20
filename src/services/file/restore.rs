@@ -7,10 +7,7 @@ impl Service {
         self.create_version(file).await?;
 
         // Get the FileVersion from the version_number provided
-        let restore_version = self
-            .file_version_repo
-            .get_version_by_number(version_number)
-            .await?;
+        let restore_version = self.get_version_by_number(version_number).await?;
 
         // Construct the file version path
         let file_version_path = &format!(

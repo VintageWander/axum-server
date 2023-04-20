@@ -10,9 +10,7 @@ use crate::{
 impl Service {
     pub async fn delete_file(&self, file: File) -> Result<File> {
         // This function will delete all version files
-        self.file_version_repo
-            .delete_versions_by_file(&file)
-            .await?;
+        self.delete_versions_by_file(&file).await?;
 
         // Create the file path
         let file_path = format!("{}.{}", file.id, file.extension.to_string());
@@ -20,14 +18,13 @@ impl Service {
         let (_, _, deleted_file) = try_join!(
             self.storage.delete_object(file_path),
             self.storage.delete_folder(file.id.to_string()),
-            self.file_repo.delete_file(file)
+            self.file_dao.delete_one(file)
         )?;
         Ok(deleted_file)
     }
 
     pub async fn delete_files_by_folder(&self, folder: Folder) -> Result<()> {
         let files = self
-            .file_repo
             .get_files_by_position(&folder.fullpath)
             .await?;
 
