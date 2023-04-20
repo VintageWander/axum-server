@@ -19,7 +19,6 @@ mod extractors;
 mod handler;
 mod helper;
 mod model;
-mod repo;
 mod request;
 mod routes;
 mod services;
