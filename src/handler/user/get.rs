@@ -46,7 +46,7 @@ pub async fn get_user_handler(
     let other_shared_files = match &user_or_guest {
         Some(LoggedInUser(user)) => {
             service
-                .get_shared_files_from_accessor(user)
+                .get_shared_files_from_collaborator(user)
                 .await?
         }
         None => vec![],
@@ -67,7 +67,7 @@ pub async fn get_user_handler(
     let other_shared_folders = match &user_or_guest {
         Some(LoggedInUser(user)) => {
             service
-                .get_shared_folders_from_accessor(user)
+                .get_shared_folders_from_collaborator(user)
                 .await?
         }
         None => vec![],

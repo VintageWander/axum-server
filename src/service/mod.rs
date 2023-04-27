@@ -1,14 +1,16 @@
 pub mod file;
-pub mod file_accessor;
+pub mod file_collaborator;
 pub mod file_version;
 pub mod folder;
-pub mod folder_accessor;
+pub mod folder_collaborator;
 pub mod user;
 
 use crate::{
     dao::storage::Storage,
     db::{aws::S3, mongo::Mongo},
-    model::{file::*, file_accessor::*, file_version::*, folder::*, folder_accessor::*, user::*},
+    model::{
+        file::*, file_collaborator::*, file_version::*, folder::*, folder_collaborator::*, user::*,
+    },
 };
 
 #[derive(Debug, Clone)]
@@ -17,8 +19,8 @@ pub struct Service {
     file: FileDao,
     folder: FolderDao,
     file_version: FileVersionDao,
-    file_accessor: FileAccessorDao,
-    folder_accessor: FolderAccessorDao,
+    file_collaborator: FileCollaboratorDao,
+    folder_collaborator: FolderCollaboratorDao,
     pub storage: Storage,
 }
 
@@ -29,8 +31,10 @@ impl Service {
             file: FileDao::new(db.get_collection("File")),
             folder: FolderDao::new(db.get_collection("Folder")),
             file_version: FileVersionDao::new(db.get_collection("FileVersion")),
-            file_accessor: FileAccessorDao::new(db.get_collection("FileAccessor")),
-            folder_accessor: FolderAccessorDao::new(db.get_collection("FolderAccessor")),
+            file_collaborator: FileCollaboratorDao::new(db.get_collection("FileCollaborator")),
+            folder_collaborator: FolderCollaboratorDao::new(
+                db.get_collection("FolderCollaborator"),
+            ),
             storage: Storage::init(&S3::init()),
         }
     }

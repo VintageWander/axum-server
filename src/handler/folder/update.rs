@@ -23,7 +23,7 @@ pub async fn update_folder_handler(
         Some(owned_folder) => owned_folder,
         None => {
             service
-                .get_shared_folder_from_accessor(folder_id, &user)
+                .get_shared_folder_from_collaborator(folder_id, &user)
                 .await?
         }
     };

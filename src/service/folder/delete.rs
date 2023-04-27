@@ -66,12 +66,12 @@ impl Service {
         Ok(())
     }
 
-    pub async fn remove_accessor_from_folder(
+    pub async fn remove_collaborator_from_folder(
         &self,
-        accessor: &User,
+        collaborator: &User,
         folder: &Folder,
     ) -> Result<()> {
-        self.unlink_folder_accessor(folder.id, accessor.id)
+        self.unlink_folder_collaborator(folder.id, collaborator.id)
             .await?;
         Ok(())
     }

@@ -16,7 +16,7 @@ impl Service {
         let file_path = format!("{}.{}", file.id, file.extension.to_string());
 
         let (_, _, _, deleted_file) = try_join!(
-            self.unlink_accessors_from_file(file.id),
+            self.unlink_collaborators_from_file(file.id),
             self.storage.delete_object(file_path),
             self.storage.delete_folder(file.id.to_string()),
             self.file.delete_one(file)
@@ -40,8 +40,12 @@ impl Service {
         Ok(())
     }
 
-    pub async fn remove_accessor_from_file(&self, accessor: &User, file: &File) -> Result<()> {
-        self.unlink_file_accessor(file.id, accessor.id)
+    pub async fn remove_collaborator_from_file(
+        &self,
+        collaborator: &User,
+        file: &File,
+    ) -> Result<()> {
+        self.unlink_file_collaborator(file.id, collaborator.id)
             .await?;
         Ok(())
     }

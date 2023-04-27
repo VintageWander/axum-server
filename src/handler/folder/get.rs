@@ -103,7 +103,7 @@ pub async fn get_folder_handler(
             // But this time checks if he is a collaborator
             None => {
                 service
-                    .get_shared_folder_from_accessor(folder_id, &user)
+                    .get_shared_folder_from_collaborator(folder_id, &user)
                     .await?
             }
         },

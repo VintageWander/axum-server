@@ -20,7 +20,7 @@ pub async fn delete_file_handler(
         Some(owned_file) => owned_file,
         None => {
             service
-                .get_shared_file_from_accessor(file_id, &cookie_user)
+                .get_shared_file_from_collaborator(file_id, &cookie_user)
                 .await?
         }
     };

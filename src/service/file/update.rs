@@ -42,7 +42,8 @@ impl Service {
         }
 
         if file.visibility == FileVisibility::Private {
-            self.unlink_accessors_from_file(file.id).await?;
+            self.unlink_collaborators_from_file(file.id)
+                .await?;
         }
 
         // Update the file model

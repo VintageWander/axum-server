@@ -24,7 +24,7 @@ pub async fn get_files_handler(
 
         // Get all files that the user was shared access to
         let shared_files = service
-            .get_shared_files_from_accessor(&user)
+            .get_shared_files_from_collaborator(&user)
             .await?;
 
         // Get all public files
@@ -111,7 +111,7 @@ pub async fn get_file_handler(
             // But this time checks if he is a collaborator
             None => {
                 service
-                    .get_shared_file_from_accessor(file_id, &user)
+                    .get_shared_file_from_collaborator(file_id, &user)
                     .await?
             }
         },

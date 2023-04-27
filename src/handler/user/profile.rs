@@ -17,7 +17,7 @@ pub async fn profile_user_handler(
     let my_shared_files = service.get_shared_files_by_owner(&user).await?;
 
     let other_shared_files = service
-        .get_shared_files_from_accessor(&user)
+        .get_shared_files_from_collaborator(&user)
         .await?;
 
     let private_files = service.get_private_files_by_owner(&user).await?;
@@ -27,7 +27,7 @@ pub async fn profile_user_handler(
     let my_shared_folders = service.get_shared_folders_by_owner(&user).await?;
 
     let other_shared_folders = service
-        .get_shared_folders_from_accessor(&user)
+        .get_shared_folders_from_collaborator(&user)
         .await?;
 
     let private_folders = service

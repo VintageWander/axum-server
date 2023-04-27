@@ -53,8 +53,12 @@ impl Service {
         Ok(())
     }
 
-    pub async fn add_accessor_to_folder(&self, accessor: &User, folder: &Folder) -> Result<()> {
-        self.link_folder_accessor(folder.id, accessor.id)
+    pub async fn add_collaborator_to_folder(
+        &self,
+        collaborator: &User,
+        folder: &Folder,
+    ) -> Result<()> {
+        self.link_folder_collaborator(folder.id, collaborator.id)
             .await?;
         Ok(())
     }

@@ -19,7 +19,7 @@ pub async fn delete_folder_handler(
         Some(owned_folder) => owned_folder,
         None => {
             service
-                .get_shared_folder_from_accessor(folder_id, &cookie_user)
+                .get_shared_folder_from_collaborator(folder_id, &cookie_user)
                 .await?
         }
     };

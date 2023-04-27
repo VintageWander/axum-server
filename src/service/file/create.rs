@@ -33,8 +33,8 @@ impl Service {
         Ok(new_file)
     }
 
-    pub async fn add_accessor_to_file(&self, accessor: &User, file: &File) -> Result<()> {
-        self.link_file_accessor(file.id, accessor.id)
+    pub async fn add_collaborator_to_file(&self, collaborator: &User, file: &File) -> Result<()> {
+        self.link_file_collaborator(file.id, collaborator.id)
             .await?;
         Ok(())
     }

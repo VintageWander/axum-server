@@ -13,12 +13,12 @@ pub async fn get_file_collaborators_handler(
     let file = service
         .get_file_by_id_owner(file_id, &user)
         .await?;
-    let accessors = service
-        .get_accessors_from_shared_file(&file)
+    let collaborators = service
+        .get_collaborators_from_shared_file(&file)
         .await?
         .into_iter()
         .map(|a| a.into_dto())
         .collect::<Vec<_>>();
 
-    Ok(Web::ok("Get all accessors success", accessors))
+    Ok(Web::ok("Get all collaborators success", collaborators))
 }

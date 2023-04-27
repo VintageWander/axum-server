@@ -36,7 +36,7 @@ pub async fn file_content_handler(
             Some(owned_file) => owned_file,
             None => {
                 service
-                    .get_shared_file_from_accessor(file_id, &user)
+                    .get_shared_file_from_collaborator(file_id, &user)
                     .await?
             }
         },

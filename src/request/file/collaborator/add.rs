@@ -6,16 +6,16 @@ use validator::Validate;
 use crate::{error::Error, service::Service};
 
 #[derive(Debug, Serialize, Deserialize, Validate)]
-pub struct FileAddAccessorRequest {
+pub struct FileAddCollaboratorRequest {
     #[validate(email(message = "Invalid email"))]
     pub email: String,
 }
 
 #[async_trait]
-impl FromRequest<Service, Body> for FileAddAccessorRequest {
+impl FromRequest<Service, Body> for FileAddCollaboratorRequest {
     type Rejection = Error;
     async fn from_request(req: Request<Body>, state: &Service) -> Result<Self, Self::Rejection> {
-        let Json(body) = Json::<FileAddAccessorRequest>::from_request(req, state).await?;
+        let Json(body) = Json::<FileAddCollaboratorRequest>::from_request(req, state).await?;
 
         body.validate()?;
 
