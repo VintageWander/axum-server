@@ -12,7 +12,7 @@ impl Service {
         let (is_duplicate, parent_folder_exists) = try_join!(
             // check for a file with the same name at the exact location
             self.exists_file_by_fullpath(&file.fullpath),
-            self.exists_file_by_fullpath(&file.position), // check in the folder service if there is a folder exists at file's location
+            self.exists_folder_by_fullpath(&file.position), // check in the folder service if there is a folder exists at file's location
         )?;
 
         if is_duplicate {
@@ -26,6 +26,7 @@ impl Service {
         let file_id = file.id.to_string();
         let full_filename = format!("{}.{}", file_id, &file.extension.to_string());
         let new_file = self.file.insert_one(file).await?;
+
         try_join!(
             self.storage.put_object(full_filename, bytes),
             self.storage.put_folder(file_id)

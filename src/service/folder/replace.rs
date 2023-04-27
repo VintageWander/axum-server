@@ -20,6 +20,7 @@ impl Service {
         };
 
         self.folder
+            .collection
             .update_many(
                 // Find all folders that has the search string in its fullpath
                 // If we don't use regex, then the result will only match for one document
@@ -33,25 +34,33 @@ impl Service {
                 // Find the "from", and replace them all with "to"
                 // This only replaces the section that matches the "from", and replace it
                 // Not the entire string itself
-                doc! {
-                    // "$set": {
+                vec![
+                    doc! {
+                    "$set": {
                         "position": {
-                            "$replaceAll": {
+                            "$replaceOne": {
                                 "input": "$position",
                                 "find": from,
-                                "replacement": to,
-                            }
-                        },
-                        "fullpath": {
-                            "$replaceAll": {
-                                "input": "$fullpath",
-                                "find": from,
-                                "replacement": to,
+                                "replacement": to
                             }
                         }
-                    // }
-                },
+                    }
+                    },
+                    doc! {
+                        "$set": {
+                            "fullpath": {
+                                "$replaceOne": {
+                                    "input": "$fullpath",
+                                    "find": from,
+                                    "replacement": to
+                                }
+                            }
+                        }
+                    },
+                ],
+                None,
             )
-            .await
+            .await?;
+        Ok(())
     }
 }
