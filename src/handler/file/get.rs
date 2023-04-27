@@ -1,7 +1,12 @@
 use axum::extract::State;
 
 use crate::{
-    model::file::*, request::user::loggedin::LoggedInUser, service::Service, web::Web, WebResult,
+    extractors::param::ParamID,
+    model::{file::*, populated::file::FilePopulated},
+    request::user::loggedin::LoggedInUser,
+    service::Service,
+    web::Web,
+    WebResult,
 };
 
 pub async fn get_files_handler(
@@ -17,6 +22,11 @@ pub async fn get_files_handler(
             .await?
             .into_iter();
 
+        // Get all files that the user was shared access to
+        let shared_files = service
+            .get_shared_files_from_accessor(&user)
+            .await?;
+
         // Get all public files
         let public_files = service
             .get_public_files()
@@ -24,13 +34,15 @@ pub async fn get_files_handler(
             .into_iter()
             .filter(|f| f.owner != user.id);
 
+        // Chain them together
         users_files
+            .chain(shared_files)
             .chain(public_files)
             .map(|f| f.into_response())
             .collect()
     } else {
         // Else, for the guest,
-        // Get all public files are there
+        // Get all public files that are there
 
         service
             .get_public_files()
@@ -40,6 +52,7 @@ pub async fn get_files_handler(
             .collect()
     };
 
+    // Retain is a function that filters the vec by a boolean function
     all_files.retain(|f| {
         let mut bool = true;
         if let Some(id) = &file_query.id {
@@ -76,4 +89,39 @@ pub async fn get_files_handler(
     });
 
     Ok(Web::ok("Get all files successful", all_files))
+}
+
+// Get a file by id
+pub async fn get_file_handler(
+    State(service): State<Service>,
+    user_or_guest: Option<LoggedInUser>,
+    ParamID(file_id): ParamID,
+) -> WebResult {
+    // Checks if the requester is logged in or not
+    let file = match user_or_guest {
+        // Fetch the file by id and checks if he owns it
+        Some(LoggedInUser(user)) => match service
+            .get_file_by_id_owner(file_id, &user)
+            .await
+            .ok()
+        {
+            // If he does own it then return his file
+            Some(owned_file) => owned_file,
+            // Else, do another request to the database,
+            // But this time checks if he is a collaborator
+            None => {
+                service
+                    .get_shared_file_from_accessor(file_id, &user)
+                    .await?
+            }
+        },
+        // If the user is not logged in,
+        // Return files in the public
+        None => service.get_public_file_by_id(file_id).await?,
+    };
+    let file_owner = service.get_user_by_id(file.owner).await?;
+
+    let result = FilePopulated::new(file, file_owner);
+
+    Ok(Web::ok("Get file by id success", result))
 }
