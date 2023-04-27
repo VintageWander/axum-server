@@ -1,7 +1,7 @@
 use axum::{async_trait, body::Body, extract::FromRequest, http::Request, Json};
 use serde::{Deserialize, Serialize};
 
-use crate::{error::Error, services::Service};
+use crate::{error::Error, service::Service};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FileRestoreRequest {

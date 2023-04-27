@@ -10,7 +10,7 @@ use crate::{
         encode::{make_access_token, make_refresh_token},
     },
     request::user::{delete::DeleteUserRequest, loggedin::LoggedInUser},
-    services::Service,
+    service::Service,
     web::Web,
     WebResult,
 };

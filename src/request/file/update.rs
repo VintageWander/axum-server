@@ -16,7 +16,7 @@ use crate::{
         file::{File, FileVisibility},
         user::User,
     },
-    services::Service,
+    service::Service,
     validation::file::*,
     Result,
 };

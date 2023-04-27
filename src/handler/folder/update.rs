@@ -3,7 +3,7 @@ use axum::extract::State;
 use crate::{
     extractors::param::ParamID,
     request::{folder::update::UpdateFolderRequest, user::loggedin::LoggedInUser},
-    services::Service,
+    service::Service,
     web::Web,
     WebResult,
 };

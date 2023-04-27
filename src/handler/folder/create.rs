@@ -2,7 +2,7 @@ use axum::extract::State;
 
 use crate::{
     request::{folder::create::CreateFolderRequest, user::loggedin::LoggedInUser},
-    services::Service,
+    service::Service,
     web::Web,
     WebResult,
 };

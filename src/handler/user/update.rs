@@ -4,7 +4,7 @@ use crate::{
     error::Error,
     extractors::param::ParamID,
     request::user::{loggedin::LoggedInUser, update::UpdateUserRequest},
-    services::Service,
+    service::Service,
     web::Web,
     WebResult,
 };

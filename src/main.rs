@@ -8,7 +8,7 @@ use db::mongo::Mongo;
 use dotenv::{dotenv, var};
 use error::Error;
 
-use services::Service;
+use service::Service;
 
 use crate::routes::app_routes;
 
@@ -21,7 +21,7 @@ mod helper;
 mod model;
 mod request;
 mod routes;
-mod services;
+mod service;
 mod validation;
 mod web;
 

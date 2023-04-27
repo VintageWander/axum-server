@@ -2,7 +2,7 @@ use axum::{async_trait, body::Body, extract::FromRequest, http::Request, Json};
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{error::Error, services::Service, validation::user::check_password};
+use crate::{error::Error, service::Service, validation::user::check_password};
 
 #[derive(Debug, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]

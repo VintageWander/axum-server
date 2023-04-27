@@ -6,7 +6,7 @@ use crate::{
     helper::auth::{
         cookie::make_refresh_cookie, decode::decode_refresh_token, encode::make_refresh_token,
     },
-    services::Service,
+    service::Service,
     web::Web,
     WebResult,
 };

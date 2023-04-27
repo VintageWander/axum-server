@@ -2,7 +2,7 @@ use axum::extract::State;
 // use tokio::spawn;
 
 use crate::{
-    extractors::param::ParamID, request::user::loggedin::LoggedInUser, services::Service, web::Web,
+    extractors::param::ParamID, request::user::loggedin::LoggedInUser, service::Service, web::Web,
     WebResult,
 };
 

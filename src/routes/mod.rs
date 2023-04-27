@@ -1,6 +1,6 @@
 use axum::Router;
 
-use crate::services::Service;
+use crate::service::Service;
 
 use self::{auth::auth_routes, file::file_routes, folder::folders_route, user::user_routes};
 

@@ -4,7 +4,7 @@ use validator::Validate;
 
 use crate::{
     error::Error,
-    services::Service,
+    service::Service,
     validation::user::{check_password, check_username},
 };
 

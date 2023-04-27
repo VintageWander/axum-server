@@ -5,7 +5,7 @@ use validator::Validate;
 use crate::{
     error::Error,
     model::user::User,
-    services::Service,
+    service::Service,
     validation::user::{check_password, check_username},
     Result,
 };

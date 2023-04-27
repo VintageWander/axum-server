@@ -8,7 +8,7 @@ use crate::{
     },
     model::user::User,
     request::user::login::LoginUserRequest,
-    services::Service,
+    service::Service,
     web::Web,
     WebResult,
 };

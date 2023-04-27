@@ -8,7 +8,7 @@ use crate::{
         create::create_user_handler, delete::delete_user_handler, get::get_users_handler,
         profile::profile_user_handler, update::update_user_handler,
     },
-    services::Service,
+    service::Service,
 };
 
 pub fn user_routes() -> Router<Service> {

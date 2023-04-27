@@ -9,7 +9,7 @@ use crate::{
         get::get_files_handler, restore::restore_file_handler, update::update_file_handler,
         version::get_file_versions_handler,
     },
-    services::Service,
+    service::Service,
 };
 
 pub fn file_routes() -> Router<Service> {

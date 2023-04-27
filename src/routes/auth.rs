@@ -5,7 +5,7 @@ use axum::{
 
 use crate::{
     handler::auth::{login::login_handler, logout::logout_handler, refresh::refresh_handler},
-    services::Service,
+    service::Service,
 };
 
 pub fn auth_routes() -> Router<Service> {

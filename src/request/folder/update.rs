@@ -6,7 +6,7 @@ use validator::Validate;
 use crate::{
     error::Error,
     model::{folder::Folder, user::User},
-    services::Service,
+    service::Service,
     validation::file::*,
     Result,
 };

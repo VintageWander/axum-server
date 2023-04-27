@@ -3,7 +3,7 @@ use axum::extract::State;
 use crate::{
     extractors::param::ParamID,
     request::{file::update::UpdateFileRequest, user::loggedin::LoggedInUser},
-    services::Service,
+    service::Service,
     web::Web,
     WebResult,
 };

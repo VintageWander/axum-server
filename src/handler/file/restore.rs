@@ -5,7 +5,7 @@ use mongodb::bson::oid::ObjectId;
 
 use crate::{
     request::{file::restore::FileRestoreRequest, user::loggedin::LoggedInUser},
-    services::Service,
+    service::Service,
     web::Web,
     WebResult,
 };

@@ -1,6 +1,6 @@
 use axum::extract::State;
 
-use crate::{request::user::loggedin::LoggedInUser, services::Service, web::Web, WebResult};
+use crate::{request::user::loggedin::LoggedInUser, service::Service, web::Web, WebResult};
 
 pub async fn profile_user_handler(
     State(service): State<Service>,

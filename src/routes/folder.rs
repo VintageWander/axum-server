@@ -8,7 +8,7 @@ use crate::{
         create::create_folder_handler, delete::delete_folder_handler, get::get_folders_handler,
         update::update_folder_handler,
     },
-    services::Service,
+    service::Service,
 };
 
 pub fn folders_route() -> Router<Service> {

@@ -2,7 +2,7 @@ use axum::{async_trait, extract::FromRequestParts, http::request::Parts};
 use axum_extra::extract::CookieJar;
 
 use crate::{
-    error::Error, helper::auth::decode::decode_access_token, model::user::User, services::Service,
+    error::Error, helper::auth::decode::decode_access_token, model::user::User, service::Service,
 };
 
 pub struct LoggedInUser(pub User);

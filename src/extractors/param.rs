@@ -7,7 +7,7 @@ use axum::{
 };
 use mongodb::bson::oid::ObjectId;
 
-use crate::{error::Error, services::Service};
+use crate::{error::Error, service::Service};
 
 pub struct ParamID(pub ObjectId);
 

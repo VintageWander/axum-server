@@ -11,7 +11,7 @@ use serde::Deserialize;
 use tokio_util::io::ReaderStream;
 
 use crate::{
-    extractors::param::ParamID, request::user::loggedin::LoggedInUser, services::Service, WebResult,
+    extractors::param::ParamID, request::user::loggedin::LoggedInUser, service::Service, WebResult,
 };
 
 #[derive(Debug, Deserialize)]
