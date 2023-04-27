@@ -4,7 +4,6 @@ use tokio::spawn;
 
 use crate::{
     error::Error,
-    extractors::param::ParamID,
     helper::auth::{
         cookie::{make_access_cookie, make_refresh_cookie},
         encode::{make_access_token, make_refresh_token},
@@ -18,15 +17,9 @@ use crate::{
 pub async fn delete_user_handler(
     State(service): State<Service>,
     cookies: CookieJar,
-    ParamID(user_id): ParamID,
     LoggedInUser(cookie_user): LoggedInUser,
     user_req: DeleteUserRequest,
 ) -> WebResult {
-    // Check if the param id and the logged in user id is valid
-    if user_id != cookie_user.id {
-        return Err(Error::Unauthorized);
-    }
-
     // Check if the user request form password matches with the user's password
     if user_req.password != cookie_user.password {
         return Err(Error::InvalidPassword);
