@@ -1,7 +1,10 @@
 use mongodb::bson::{doc, oid::ObjectId, Document, Regex};
 
 use crate::{
-    model::{folder::Folder, user::User},
+    model::{
+        folder::{Folder, FolderVisibility},
+        user::User,
+    },
     service::Service,
     validation::file::check_dir,
     Result,
@@ -15,6 +18,12 @@ impl Service {
     pub async fn get_folders_by_owner(&self, owner: &User) -> Result<Vec<Folder>> {
         self.folder
             .get_many(Folder::owner(owner.id))
+            .await
+    }
+
+    pub async fn get_private_folders_by_owner(&self, owner: &User) -> Result<Vec<Folder>> {
+        self.folder
+            .get_many(Folder::owner(owner.id).visibility(FolderVisibility::Private))
             .await
     }
 
