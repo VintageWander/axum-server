@@ -27,17 +27,20 @@ pub async fn file_content_handler(
     }): Query<VersionQuery>,
     user_or_guest: Option<LoggedInUser>,
 ) -> WebResult {
-    dbg!(&version_number_option);
-    let file = if let Some(LoggedInUser(user)) = user_or_guest {
-        // If the user is logged in,
-        // Get their file
-        service
+    let file = match user_or_guest {
+        Some(LoggedInUser(user)) => match service
             .get_file_by_id_owner(file_id, &user)
-            .await?
-    } else {
-        // Else,
-        // Get the public file by id
-        service.get_public_file_by_id(file_id).await?
+            .await
+            .ok()
+        {
+            Some(owned_file) => owned_file,
+            None => {
+                service
+                    .get_shared_file_from_accessor(file_id, &user)
+                    .await?
+            }
+        },
+        None => service.get_public_file_by_id(file_id).await?,
     };
 
     // Make the file path
