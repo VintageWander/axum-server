@@ -40,7 +40,7 @@ impl FromRequest<Service, Body> for UpdateFolderRequest {
 }
 
 impl UpdateFolderRequest {
-    pub fn into_folder_with_owner(self, old_folder: Folder, owner: &User) -> Result<Folder> {
+    pub fn into_folder(self, owner: &User, old_folder: Folder) -> Result<Folder> {
         Folder::new(
             old_folder.id,
             owner,
