@@ -1,6 +1,7 @@
 use axum::extract::State;
 
 use crate::{
+    model::populated::folder::FolderPopulated,
     request::{folder::create::CreateFolderRequest, user::loggedin::LoggedInUser},
     service::Service,
     web::Web,
@@ -14,10 +15,9 @@ pub async fn create_folder_handler(
 ) -> WebResult {
     let folder = folder_req.into_folder_with_owner(&cookie_user)?;
 
-    let new_folder = service
-        .create_folder(folder)
-        .await?
-        .into_response();
+    let new_folder = service.create_folder(folder).await?;
 
-    Ok(Web::ok("Create a new folder successfully", new_folder))
+    let result = FolderPopulated::new(new_folder, cookie_user);
+
+    Ok(Web::ok("Create a new folder successfully", result))
 }
