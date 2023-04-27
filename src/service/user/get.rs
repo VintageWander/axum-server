@@ -23,4 +23,8 @@ impl Service {
             .get_one(User::username(username).password(password))
             .await
     }
+
+    pub async fn get_user_by_email(&self, email: &str) -> Result<User> {
+        self.user.get_one(User::email(email)).await
+    }
 }
