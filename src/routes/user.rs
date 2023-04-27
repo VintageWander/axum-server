@@ -13,7 +13,7 @@ use crate::{
 
 pub fn user_routes() -> Router<Service> {
     Router::new().nest(
-        "/users",
+        "/user",
         Router::new()
             .merge(get_users_route())
             .merge(create_users_route())
@@ -36,9 +36,9 @@ pub fn profile_user_route() -> Router<Service> {
 }
 
 pub fn update_user_route() -> Router<Service> {
-    Router::new().route("/:user_id", put(update_user_handler))
+    Router::new().route("/", put(update_user_handler))
 }
 
 pub fn delete_user_route() -> Router<Service> {
-    Router::new().route("/:user_id", delete(delete_user_handler))
+    Router::new().route("/", delete(delete_user_handler))
 }

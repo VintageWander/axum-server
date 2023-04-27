@@ -19,7 +19,7 @@ use crate::{
 
 pub fn folders_route() -> Router<Service> {
     Router::new().nest(
-        "/folders",
+        "/folder",
         Router::new()
             .merge(get_folders_route())
             .merge(get_folder_route())

@@ -22,7 +22,7 @@ use crate::{
 
 pub fn file_routes() -> Router<Service> {
     Router::new().nest(
-        "/files",
+        "/file",
         Router::new()
             .merge(get_files_route())
             .merge(get_file_route())
@@ -47,7 +47,7 @@ pub fn get_file_route() -> Router<Service> {
 }
 
 pub fn file_content_route() -> Router<Service> {
-    Router::new().route("/:file_id", get(file_content_handler))
+    Router::new().route("/content/:file_id", get(file_content_handler))
 }
 
 pub fn get_file_versions_route() -> Router<Service> {
