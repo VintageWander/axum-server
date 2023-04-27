@@ -1,14 +1,13 @@
-use axum::extract::{Query, State};
+use axum::extract::State;
 
 use crate::{
-    extractors::folder_query::FolderQuery, request::user::loggedin::LoggedInUser,
-    services::Service, web::Web, WebResult,
+    model::folder::*, request::user::loggedin::LoggedInUser, service::Service, web::Web, WebResult,
 };
 
 pub async fn get_folders_handler(
     State(service): State<Service>,
     user_or_guest: Option<LoggedInUser>,
-    Query(folder_query): Query<FolderQuery>,
+    folder_query: FolderQueryFromRequest,
 ) -> WebResult {
     let mut all_folders: Vec<_> = if let Some(LoggedInUser(cookie_user)) = user_or_guest {
         // If the user is logged in,
@@ -62,7 +61,7 @@ pub async fn get_folders_handler(
             bool = bool && &f.position == position
         }
         if let Some(visibility) = &folder_query.visibility {
-            bool = bool && &f.visibility.to_string() == visibility
+            bool = bool && &f.visibility == visibility
         }
         if let Some(fullpath) = &folder_query.fullpath {
             bool = bool && &f.fullpath == fullpath

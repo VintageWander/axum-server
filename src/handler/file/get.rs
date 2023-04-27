@@ -1,14 +1,13 @@
-use axum::extract::{Query, State};
+use axum::extract::State;
 
 use crate::{
-    extractors::file_query::FileQuery, request::user::loggedin::LoggedInUser, services::Service,
-    web::Web, WebResult,
+    model::file::*, request::user::loggedin::LoggedInUser, service::Service, web::Web, WebResult,
 };
 
 pub async fn get_files_handler(
     State(service): State<Service>,
     user_or_guest: Option<LoggedInUser>,
-    Query(file_query): Query<FileQuery>,
+    file_query: FileQueryFromRequest,
 ) -> WebResult {
     let mut all_files: Vec<_> = if let Some(LoggedInUser(user)) = user_or_guest {
         // If the user is logged in
@@ -53,13 +52,13 @@ pub async fn get_files_handler(
             bool = bool && filename == &f.filename
         };
         if let Some(extension) = &file_query.extension {
-            bool = bool && extension == &f.extension.to_string()
+            bool = bool && extension == &f.extension
         };
         if let Some(full_filename) = &file_query.full_filename {
             bool = bool && full_filename == &f.full_filename
         };
         if let Some(visibility) = &file_query.visibility {
-            bool = bool && visibility == &f.visibility.to_string()
+            bool = bool && visibility == &f.visibility
         };
         if let Some(position) = &file_query.position {
             bool = bool && position == &f.position
