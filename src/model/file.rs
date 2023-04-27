@@ -134,7 +134,6 @@ impl File {
         };
 
         file.validate()?;
-
         Ok(file)
     }
 
