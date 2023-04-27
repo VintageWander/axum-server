@@ -28,6 +28,7 @@ impl Service {
 
             // Change the fullpath and the folder name
             root_folder.folder_name = format!("{}/", &user.username);
+            root_folder.position = format!("{}/", &user.username);
             root_folder.fullpath = format!("{}/", &user.username);
 
             // Update the root folder
