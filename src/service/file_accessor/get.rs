@@ -16,4 +16,10 @@ impl Service {
             .get_many(FileAccessor::user_id(user_id))
             .await
     }
+
+    pub async fn get_fa(&self, file_id: ObjectId, user_id: ObjectId) -> Result<FileAccessor> {
+        self.file_accessor
+            .get_one(FileAccessor::file_id(file_id).user_id(user_id))
+            .await
+    }
 }

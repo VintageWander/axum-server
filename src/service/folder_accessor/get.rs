@@ -16,4 +16,10 @@ impl Service {
             .get_many(FolderAccessor::user_id(user_id))
             .await
     }
+
+    pub async fn get_foa(&self, folder_id: ObjectId, user_id: ObjectId) -> Result<FolderAccessor> {
+        self.folder_accessor
+            .get_one(FolderAccessor::folder_id(folder_id).user_id(user_id))
+            .await
+    }
 }
