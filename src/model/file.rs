@@ -1,4 +1,4 @@
-use backend_macros::Dto;
+use backend_macros::{Dto, IntoSearchQuery};
 use chrono::Utc;
 use mongodb::bson::{doc, oid::ObjectId};
 use mongoose::{IntoDoc, Model};
@@ -9,7 +9,7 @@ use crate::{error::Error, helper::make_error::validation_message, validation::fi
 
 use super::user::User;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Validate, Model, Dto)]
+#[derive(Debug, Clone, Serialize, Deserialize, Validate, Model, Dto, IntoSearchQuery)]
 #[serde(rename_all = "camelCase")]
 pub struct File {
     #[serde(rename = "_id")]
@@ -53,18 +53,6 @@ pub enum FileExtension {
     Txt,
 }
 
-impl From<FileExtension> for &str {
-    fn from(f: FileExtension) -> Self {
-        match f {
-            FileExtension::Png => "png",
-            FileExtension::Jpg => "jpg",
-            FileExtension::Jpeg => "jpeg",
-            FileExtension::Mp3 => "mp3",
-            FileExtension::Txt => "txt",
-        }
-    }
-}
-
 impl TryFrom<&str> for FileExtension {
     type Error = Error;
     fn try_from(str: &str) -> std::result::Result<Self, Self::Error> {
@@ -89,16 +77,6 @@ pub enum FileVisibility {
     Shared,
     #[serde(rename = "private")]
     Private,
-}
-
-impl From<FileVisibility> for &str {
-    fn from(f: FileVisibility) -> Self {
-        match f {
-            FileVisibility::Public => "public",
-            FileVisibility::Shared => "shared",
-            FileVisibility::Private => "private",
-        }
-    }
 }
 
 impl TryFrom<String> for FileVisibility {

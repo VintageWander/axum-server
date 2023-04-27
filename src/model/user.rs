@@ -1,4 +1,4 @@
-use backend_macros::Dto;
+use backend_macros::{Dto, IntoSearchQuery};
 
 use mongodb::bson::{doc, oid::ObjectId};
 use mongoose::Model;
@@ -7,7 +7,7 @@ use validator::Validate;
 
 use crate::validation::user::{check_password, check_username};
 
-#[derive(Debug, Clone, Serialize, Deserialize, Validate, Model, Dto)]
+#[derive(Debug, Clone, Serialize, Deserialize, Validate, Model, Dto, IntoSearchQuery)]
 #[serde(rename_all = "camelCase")]
 pub struct User {
     #[serde(rename = "_id")]

@@ -1,4 +1,4 @@
-use backend_macros::Dto;
+use backend_macros::{Dto, IntoSearchQuery};
 use chrono::Utc;
 use mongodb::bson::{doc, oid::ObjectId};
 use mongoose::{IntoDoc, Model};
@@ -9,7 +9,7 @@ use crate::{error::Error, helper::make_error::validation_message, validation::fi
 
 use super::user::User;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Validate, Model, Dto)]
+#[derive(Debug, Clone, Serialize, Deserialize, Validate, Model, Dto, IntoSearchQuery)]
 #[serde(rename_all = "camelCase")]
 pub struct Folder {
     #[serde(rename = "_id")]
@@ -41,16 +41,6 @@ pub enum FolderVisibility {
     Shared,
     #[serde(rename = "private")]
     Private,
-}
-
-impl From<FolderVisibility> for &str {
-    fn from(f: FolderVisibility) -> Self {
-        match f {
-            FolderVisibility::Public => "public",
-            FolderVisibility::Shared => "shared",
-            FolderVisibility::Private => "private",
-        }
-    }
 }
 
 impl TryFrom<&str> for FolderVisibility {
