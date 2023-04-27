@@ -1,7 +1,12 @@
 use axum::extract::State;
 
 use crate::{
-    model::folder::*, request::user::loggedin::LoggedInUser, service::Service, web::Web, WebResult,
+    extractors::param::ParamID,
+    model::{folder::*, populated::folder::FolderPopulated},
+    request::user::loggedin::LoggedInUser,
+    service::Service,
+    web::Web,
+    WebResult,
 };
 
 pub async fn get_folders_handler(
@@ -76,4 +81,39 @@ pub async fn get_folders_handler(
     });
 
     Ok(Web::ok("Get all folders successfully", all_folders))
+}
+
+// Get a folder by id
+pub async fn get_folder_handler(
+    State(service): State<Service>,
+    user_or_guest: Option<LoggedInUser>,
+    ParamID(folder_id): ParamID,
+) -> WebResult {
+    // Checks if the requester is logged in or not
+    let folder = match user_or_guest {
+        // Fetch the folder by id and checks if he owns it
+        Some(LoggedInUser(user)) => match service
+            .get_folder_by_id_owner(folder_id, &user)
+            .await
+            .ok()
+        {
+            // If he does own it then return his folder
+            Some(owned_folder) => owned_folder,
+            // Else, do another request to the database,
+            // But this time checks if he is a collaborator
+            None => {
+                service
+                    .get_shared_folder_from_accessor(folder_id, &user)
+                    .await?
+            }
+        },
+        // If the user is not logged in,
+        // Return folders in the public
+        None => service.get_public_folder_by_id(folder_id).await?,
+    };
+    let folder_owner = service.get_user_by_id(folder.owner).await?;
+
+    let result = FolderPopulated::new(folder, folder_owner);
+
+    Ok(Web::ok("Get folder by id success", result))
 }
