@@ -1,3 +1,5 @@
+use mongodb::bson::oid::ObjectId;
+
 use crate::{
     model::{
         folder::{Folder, FolderVisibility},
@@ -26,6 +28,10 @@ impl Service {
         self.folder
             .get_many(Folder::visibility(FolderVisibility::Public).position(position))
             .await
+    }
+
+    pub async fn get_public_folder_by_id(&self, folder_id: ObjectId) -> Result<Folder> {
+        self.folder.get_one(Folder::id(folder_id)).await
     }
 
     pub async fn get_public_folder_by_fullpath(&self, fullpath: &str) -> Result<Folder> {

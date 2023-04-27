@@ -1,3 +1,5 @@
+use mongodb::bson::oid::ObjectId;
+
 use crate::{
     model::{
         folder::{Folder, FolderVisibility},
@@ -13,8 +15,27 @@ impl Service {
             .get_many(Folder::visibility(FolderVisibility::Shared).owner(owner.id))
             .await
     }
+
+    pub async fn get_shared_folder_from_accessor(
+        &self,
+        folder_id: ObjectId,
+        accessor: &User,
+    ) -> Result<Folder> {
+        let foa = self.get_foa(folder_id, accessor.id).await?;
+        self.get_folder_by_id(foa.folder_id).await
+    }
+
+    pub async fn get_accessor_from_shared_folder(
+        &self,
+        folder: &Folder,
+        accessor_id: ObjectId,
+    ) -> Result<User> {
+        let foa = self.get_foa(folder.id, accessor_id).await?;
+        self.get_user_by_id(foa.folder_id).await
+    }
+
     // This function gets all accessors from a folder
-    pub async fn get_accessors_from_folder(&self, folder: &Folder) -> Result<Vec<User>> {
+    pub async fn get_accessors_from_shared_folder(&self, folder: &Folder) -> Result<Vec<User>> {
         let fas = self.get_foas_by_folder_id(folder.id).await?;
         let mut users = vec![];
         for fa in fas {
