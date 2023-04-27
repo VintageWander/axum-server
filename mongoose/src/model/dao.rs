@@ -6,7 +6,7 @@ pub fn dao_macro(struct_name: Ident) -> impl ToTokens {
     let output = quote! {
         #[derive(Debug, Clone)]
         pub struct #dao_name {
-            collection: mongodb::Collection<#struct_name>,
+            pub collection: mongodb::Collection<#struct_name>,
         }
 
         impl #dao_name {
