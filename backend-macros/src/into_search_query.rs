@@ -11,7 +11,9 @@ pub fn into_search_query_macro(struct_type: Ident, fields: Fields) -> impl ToTok
 
     for field in fields {
         // Takes the field name
-        let ident = field.ident.expect("Struct fields must have a name");
+        let ident = field
+            .ident
+            .expect("Struct fields must have a name");
 
         // Takes the field type
         let ty = field.ty;
@@ -21,7 +23,13 @@ pub fn into_search_query_macro(struct_type: Ident, fields: Fields) -> impl ToTok
 
         // Convert the field type to string
         let ty_string = match &ty {
-            syn::Type::Path(path) => path.path.segments.last().unwrap().ident.to_string(),
+            syn::Type::Path(path) => path
+                .path
+                .segments
+                .last()
+                .unwrap()
+                .ident
+                .to_string(),
             _ => panic!("Only paths are supported"),
         };
 
@@ -64,13 +72,13 @@ pub fn into_search_query_macro(struct_type: Ident, fields: Fields) -> impl ToTok
         doc_inserts.push(match is_oid {
             true => match ident_string.as_str() {
                 "id" => quote! {
-                    if let Some(#ident) = request_body.#ident {
+                    if let Some(#ident) = query_from_request.#ident {
                         let oid = ObjectId::from_str(&#ident).map_err(|_| crate::Error::NotFound)?;
                         doc.insert("_id", oid);
                     }
                 },
                 _ => quote! {
-                    if let Some(#ident) = request_body.#ident {
+                    if let Some(#ident) = query_from_request.#ident {
                         let oid = ObjectId::from_str(&#ident).map_err(|_| crate::Error::NotFound)?;
                         doc.insert(#ident_string, oid);
                     }
@@ -79,7 +87,7 @@ pub fn into_search_query_macro(struct_type: Ident, fields: Fields) -> impl ToTok
             false => match ident_string.as_str() {
                 "password" => quote! {},
                 _ => quote! {
-                    if let Some(#ident) = request_body.#ident {
+                    if let Some(#ident) = query_from_request.#ident {
                         doc.insert(#ident_string, #ident);
                     }
                 },
@@ -90,8 +98,22 @@ pub fn into_search_query_macro(struct_type: Ident, fields: Fields) -> impl ToTok
     quote! {
         #[derive(Debug, Clone, Serialize, Deserialize)]
         #[serde(rename_all = "camelCase")]
-        struct #query_from_request {
+        pub struct #query_from_request {
             #(#query_from_request_fields)*
+        }
+
+        #[axum::async_trait]
+        impl axum::extract::FromRequest<crate::service::Service, axum::body::Body> for #query_from_request {
+            type Rejection = crate::Error;
+            async fn from_request(
+                req: axum::http::Request<axum::body::Body>,
+                state: &crate::service::Service,
+            ) -> std::result::Result<Self, Self::Rejection> {
+                                use mongodb::bson::Document;
+                let axum::extract::Query(query) = axum::extract::Query::<#query_from_request>::from_request(req, state).await?;
+
+                Ok(query)
+            }
         }
 
         pub struct #query_type(pub ::mongodb::bson::Document);
@@ -104,7 +126,7 @@ pub fn into_search_query_macro(struct_type: Ident, fields: Fields) -> impl ToTok
                 state: &crate::service::Service,
             ) -> std::result::Result<Self, Self::Rejection> {
                                 use mongodb::bson::Document;
-                let axum::extract::Query(request_body) = axum::extract::Query::<#query_from_request>::from_request(req, state).await?;
+                let query_from_request = #query_from_request::from_request(req, state).await?;
                 let mut doc: Document = Document::new();
                 use std::str::FromStr;
                 #(#doc_inserts)*

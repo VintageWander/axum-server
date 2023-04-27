@@ -3,6 +3,7 @@ use syn::Ident;
 
 pub fn enum_into_doc(enum_type: Ident, variants: Vec<Ident>) -> impl ToTokens {
     let mut match_variants = Vec::new();
+    let mut match_variants_to_str = Vec::new();
     for variant in variants {
         let variant_str = variant.to_string();
 
@@ -17,6 +18,10 @@ pub fn enum_into_doc(enum_type: Ident, variants: Vec<Ident>) -> impl ToTokens {
 
         match_variants.push(quote! {
             #enum_type::#variant => #first_lowercase.into(),
+        });
+
+        match_variants_to_str.push(quote! {
+            #enum_type::#variant => #first_lowercase,
         })
     }
     quote! {
@@ -32,6 +37,14 @@ pub fn enum_into_doc(enum_type: Ident, variants: Vec<Ident>) -> impl ToTokens {
             fn from(original: #enum_type) -> std::string::String {
                 match original {
                     #(#match_variants)*
+                }
+            }
+        }
+
+        impl From<#enum_type> for &'static str {
+            fn from(original: #enum_type) -> &'static str {
+                match original {
+                    #(#match_variants_to_str)*
                 }
             }
         }
