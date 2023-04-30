@@ -4,7 +4,7 @@ use axum_extra::extract::CookieJar;
 use crate::{
     error::Error,
     helper::auth::{
-        cookie::make_refresh_cookie, decode::decode_refresh_token, encode::make_refresh_token,
+        cookie::make_access_cookie, decode::decode_refresh_token, encode::make_access_token,
     },
     service::Service,
     web::Web,
@@ -26,12 +26,12 @@ pub async fn refresh_handler(State(service): State<Service>, cookies: CookieJar)
         return Err(Error::Unauthorized);
     }
 
-    let new_refresh_token = make_refresh_token(&user)?;
-    let new_refresh_cookie = make_refresh_cookie(new_refresh_token);
+    let new_access_token = make_access_token(&user)?;
+    let new_access_cookie = make_access_cookie(new_access_token);
 
     Ok((
         StatusCode::OK,
-        cookies.add(new_refresh_cookie),
+        cookies.add(new_access_cookie),
         Web::ok("Token successfully refreshed", ()),
     )
         .into_response())
