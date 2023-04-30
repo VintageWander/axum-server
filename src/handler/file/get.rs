@@ -1,4 +1,7 @@
+use std::str::FromStr;
+
 use axum::extract::State;
+use mongodb::bson::oid::ObjectId;
 
 use crate::{
     extractors::param::ParamID,
@@ -88,7 +91,20 @@ pub async fn get_files_handler(
         bool
     });
 
-    Ok(Web::ok("Get all files successful", all_files))
+    let mut result = vec![];
+
+    for file in all_files {
+        let file_owner = service
+            .get_user_by_id(ObjectId::from_str(&file.owner)?)
+            .await?;
+        let populated = FilePopulated {
+            file,
+            owner: file_owner.into_dto(),
+        };
+        result.push(populated);
+    }
+
+    Ok(Web::ok("Get all files successful", result))
 }
 
 // Get a file by id
@@ -110,9 +126,14 @@ pub async fn get_file_handler(
             // Else, do another request to the database,
             // But this time checks if he is a collaborator
             None => {
-                service
+                match service
                     .get_shared_file_from_collaborator(file_id, &user)
-                    .await?
+                    .await
+                    .ok()
+                {
+                    Some(shared_file) => shared_file,
+                    None => service.get_public_file_by_id(file_id).await?,
+                }
             }
         },
         // If the user is not logged in,

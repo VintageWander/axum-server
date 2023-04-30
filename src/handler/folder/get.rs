@@ -1,4 +1,7 @@
+use std::str::FromStr;
+
 use axum::extract::State;
+use mongodb::bson::oid::ObjectId;
 
 use crate::{
     extractors::param::ParamID,
@@ -23,20 +26,27 @@ pub async fn get_folders_handler(
             .get_folders_by_owner(&cookie_user)
             .await?
             .into_iter()
-            .filter(|f| f.folder_name != cookie_user.username)
-            .map(|f| f.into_response());
+            .filter(|f| f.folder_name != cookie_user.username); // filters root folder
+
+        let shared_to_folders = service
+            .get_shared_folders_from_collaborator(&cookie_user)
+            .await?
+            .into_iter();
 
         // fetch all public folders from everyone else (NOT including the user)
         let public_folders = service
             .get_public_folders()
             .await?
             .into_iter()
-            .filter(|f| f.folder_name != cookie_user.username && f.owner != cookie_user.id)
-            .map(|f| f.into_response());
+            .filter(|f| f.folder_name != cookie_user.username && f.owner != cookie_user.id);
 
         // chain 2 iterators and collect them as a vec
 
-        users_folders.chain(public_folders).collect()
+        users_folders
+            .chain(shared_to_folders)
+            .chain(public_folders)
+            .map(|f| f.into_response())
+            .collect()
     } else {
         // If the user is not logged in
 
@@ -80,7 +90,19 @@ pub async fn get_folders_handler(
         bool
     });
 
-    Ok(Web::ok("Get all folders successfully", all_folders))
+    let mut result = vec![];
+    for folder in all_folders {
+        let folder_owner = service
+            .get_user_by_id(ObjectId::from_str(&folder.owner)?)
+            .await?;
+        let populated = FolderPopulated {
+            folder,
+            owner: folder_owner.into_dto(),
+        };
+        result.push(populated);
+    }
+
+    Ok(Web::ok("Get all folders successfully", result))
 }
 
 // Get a folder by id
@@ -102,9 +124,14 @@ pub async fn get_folder_handler(
             // Else, do another request to the database,
             // But this time checks if he is a collaborator
             None => {
-                service
+                match service
                     .get_shared_folder_from_collaborator(folder_id, &user)
-                    .await?
+                    .await
+                    .ok()
+                {
+                    Some(shared_folder) => shared_folder,
+                    None => service.get_public_folder_by_id(folder_id).await?,
+                }
             }
         },
         // If the user is not logged in,

@@ -18,9 +18,14 @@ pub async fn get_file_versions_handler(
         {
             Some(owned_file) => owned_file,
             None => {
-                service
+                match service
                     .get_shared_file_from_collaborator(file_id, &user)
-                    .await?
+                    .await
+                    .ok()
+                {
+                    Some(shared_file) => shared_file,
+                    None => service.get_public_file_by_id(file_id).await?,
+                }
             }
         },
         None => service.get_public_file_by_id(file_id).await?,

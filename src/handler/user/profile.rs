@@ -1,14 +1,13 @@
 use axum::extract::State;
 
 use crate::{
-    extractors::param::ParamID, model::populated::user::UserPopulated,
-    request::user::loggedin::LoggedInUser, service::Service, web::Web, WebResult,
+    model::populated::user::UserPopulated, request::user::loggedin::LoggedInUser, service::Service,
+    web::Web, WebResult,
 };
 
 pub async fn profile_user_handler(
     State(service): State<Service>,
     LoggedInUser(user): LoggedInUser,
-    ParamID(user_id): ParamID,
 ) -> WebResult {
     // The user's public files
     let public_files = service.get_public_files_by_owner(&user).await?;
