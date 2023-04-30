@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FolderPopulated {
-    pub folder: FolderDTO,
     #[serde(flatten)]
+    pub folder: FolderDTO,
     pub owner: UserDTO,
 }
 

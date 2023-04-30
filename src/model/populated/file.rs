@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FilePopulated {
-    pub file: FileDTO,
     #[serde(flatten)]
+    pub file: FileDTO,
     pub owner: UserDTO,
 }
 
