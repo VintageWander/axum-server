@@ -42,13 +42,16 @@ impl Service {
         // Create a future vec
         let mut tasks = vec![];
 
-        // Interate through them
+        // Interate through the files within the child folders
         for folder in child_folders {
             tasks.push(self.delete_files_by_folder(folder))
         }
 
+        // Execute the task asynchronously
         try_join_all(tasks).await?;
 
+        // Delete all folders that has the same prefix fullpath that
+        // the target folder is living on
         self.delete_folders_by_prefix_fullpath(&deleted_folder.fullpath)
             .await?;
 
