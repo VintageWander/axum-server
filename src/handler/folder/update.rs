@@ -36,5 +36,5 @@ pub async fn update_folder_handler(
 
     let result = FolderPopulated::new(updated_folder, user);
 
-    Ok(Web::ok("Update a folder successfully", result))
+    Web::ok("Update a folder successfully", result)
 }

@@ -23,5 +23,5 @@ pub async fn add_file_collaborator_handler(
         .link_file_collaborator(file.id, collaborator.id)
         .await?;
 
-    Ok(Web::ok("Added collaborator to file success", ()))
+    Web::ok("Added collaborator to file success", ())
 }

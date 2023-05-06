@@ -30,5 +30,5 @@ pub async fn delete_file_handler(
     // while the web server returns result immediately
     spawn(async move { service.delete_file(target_file).await });
 
-    Ok(Web::ok("Delete file successfully", ()))
+    Web::ok("Delete file successfully", ())
 }

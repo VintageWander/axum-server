@@ -29,5 +29,5 @@ pub async fn delete_folder_handler(
     // while the web server returns result immediately
     spawn(async move { service.delete_folder(target_folder).await });
 
-    Ok(Web::ok("Delete folder successfully", ()))
+    Web::ok("Delete folder successfully", ())
 }

@@ -19,5 +19,5 @@ pub async fn create_folder_handler(
 
     let result = FolderPopulated::new(new_folder, cookie_user);
 
-    Ok(Web::ok("Create a new folder successfully", result))
+    Web::created("Create a new folder successfully", result)
 }

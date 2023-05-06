@@ -6,5 +6,5 @@ pub async fn profile_user_handler(
     State(service): State<Service>,
     LoggedInUser(user): LoggedInUser,
 ) -> WebResult {
-    Ok(Web::ok("Get user profile success", user.into_dto()))
+    Web::ok("Get user profile success", user.into_dto())
 }

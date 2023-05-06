@@ -25,5 +25,5 @@ pub async fn remove_folder_collaborator_handler(
         .unlink_folder_collaborator(folder.id, collaborator.id)
         .await?;
 
-    Ok(Web::ok("Removed collaborator to folder success", ()))
+    Web::ok("Removed collaborator to folder success", ())
 }

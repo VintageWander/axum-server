@@ -16,5 +16,5 @@ pub async fn update_user_handler(
 
     let user = service.update_user(user).await?;
 
-    Ok(Web::ok("Update user successfully", user.into_response()))
+    Web::ok("Update user successfully", user.into_response())
 }

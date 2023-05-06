@@ -19,5 +19,5 @@ pub async fn create_file_handler(
 
     let result = FilePopulated::new(new_file, user);
 
-    Ok(Web::ok("Upload file successfully", result))
+    Web::created("Upload file successfully", result)
 }

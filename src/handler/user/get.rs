@@ -16,7 +16,7 @@ pub async fn get_users_handler(
         .map(|u| u.into_response())
         .collect::<Vec<_>>();
 
-    Ok(Web::ok("Get all users success", users))
+    Web::ok("Get all users success", users)
 }
 
 pub async fn get_user_handler(
@@ -26,5 +26,5 @@ pub async fn get_user_handler(
 ) -> WebResult {
     let user = service.get_user_by_id(user_id).await?;
 
-    Ok(Web::ok("Get user success", user.into_dto()))
+    Web::ok("Get user success", user.into_dto())
 }

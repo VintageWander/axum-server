@@ -37,8 +37,5 @@ pub async fn restore_file_handler(
         .restore_file(&requested_file, restore_version)
         .await?;
 
-    Ok(Web::ok(
-        "Restore file success",
-        requested_file.into_response(),
-    ))
+    Web::ok("Restore file success", requested_file.into_response())
 }

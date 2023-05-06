@@ -38,5 +38,5 @@ pub async fn get_file_versions_handler(
         .map(|v| v.version_number)
         .collect();
 
-    Ok(Web::ok("Get all versions of a file success", versions))
+    Web::ok("Get all versions of a file success", versions)
 }

@@ -20,5 +20,5 @@ pub async fn get_folder_collaborator_handler(
         .map(|a| a.into_dto())
         .collect::<Vec<_>>();
 
-    Ok(Web::ok("Get all collaborators success", collaborators))
+    Web::ok("Get all collaborators success", collaborators)
 }

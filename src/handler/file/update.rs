@@ -36,5 +36,5 @@ pub async fn update_file_handler(
 
     let result = FilePopulated::new(updated_file, file_owner);
 
-    Ok(Web::ok("Update file successfully", result))
+    Web::ok("Update file successfully", result)
 }

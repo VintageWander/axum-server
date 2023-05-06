@@ -104,7 +104,7 @@ pub async fn get_files_handler(
         result.push(populated);
     }
 
-    Ok(Web::ok("Get all files successful", result))
+    Web::ok("Get all files successful", result)
 }
 
 // Get a file by id
@@ -144,5 +144,5 @@ pub async fn get_file_handler(
 
     let result = FilePopulated::new(file, file_owner);
 
-    Ok(Web::ok("Get file by id success", result))
+    Web::ok("Get file by id success", result)
 }

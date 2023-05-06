@@ -8,8 +8,5 @@ pub async fn create_user_handler(
 ) -> WebResult {
     let new_user = service.create_user(user_req.try_into()?).await?;
 
-    Ok(Web::ok(
-        "Create user successfully",
-        new_user.into_response(),
-    ))
+    Web::ok("Create user successfully", new_user.into_response())
 }

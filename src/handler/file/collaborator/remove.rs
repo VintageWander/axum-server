@@ -25,5 +25,5 @@ pub async fn remove_file_collaborator_handler(
         .unlink_file_collaborator(file.id, collaborator.id)
         .await?;
 
-    Ok(Web::ok("Removed collaborator to file success", ()))
+    Web::ok("Removed collaborator to file success", ())
 }

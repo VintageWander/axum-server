@@ -14,7 +14,7 @@ pub mod folder;
 pub mod user;
 
 pub async fn ok_handler(State(_): State<Service>, Path(rest): Path<String>) -> WebResult {
-    Ok(Web::ok("OK", ()))
+    Web::ok("OK", ())
 }
 
 pub fn app_routes() -> Router<Service> {

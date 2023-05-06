@@ -102,7 +102,7 @@ pub async fn get_folders_handler(
         result.push(populated);
     }
 
-    Ok(Web::ok("Get all folders successfully", result))
+    Web::ok("Get all folders successfully", result)
 }
 
 // Get a folder by id
@@ -142,5 +142,5 @@ pub async fn get_folder_handler(
 
     let result = FolderPopulated::new(folder, folder_owner);
 
-    Ok(Web::ok("Get folder by id success", result))
+    Web::ok("Get folder by id success", result)
 }

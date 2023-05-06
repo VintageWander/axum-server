@@ -25,5 +25,5 @@ pub async fn add_folder_collaborator_handler(
         .link_folder_collaborator(folder.id, collaborator.id)
         .await?;
 
-    Ok(Web::ok("Added collaborator to folder success", ()))
+    Web::ok("Added collaborator to folder success", ())
 }
