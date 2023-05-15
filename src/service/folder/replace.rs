@@ -36,15 +36,15 @@ impl Service {
                 // Not the entire string itself
                 vec![
                     doc! {
-                    "$set": {
-                        "position": {
-                            "$replaceOne": {
-                                "input": "$position",
-                                "find": from,
-                                "replacement": to
+                        "$set": {
+                            "position": {
+                                "$replaceOne": {
+                                    "input": "$position",
+                                    "find": from,
+                                    "replacement": to
+                                }
                             }
                         }
-                    }
                     },
                     doc! {
                         "$set": {
